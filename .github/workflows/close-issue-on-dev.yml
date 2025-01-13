@@ -1,0 +1,20 @@
+name: Close Issues on Dev Merge
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  close-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Close issues
+        uses: peter-evans/close-issue@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment: |
+            This issue is automatically closed because the related pull request has been merged into the `dev` branch.

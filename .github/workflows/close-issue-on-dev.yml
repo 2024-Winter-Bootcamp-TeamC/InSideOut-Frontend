@@ -15,6 +15,6 @@ jobs:
       - name: Close issues
         uses: peter-evans/close-issue@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           comment: |
             This issue is automatically closed because the related pull request has been merged into the `dev` branch.

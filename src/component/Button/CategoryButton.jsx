@@ -1,20 +1,4 @@
-import styled, { createGlobalStyle } from "styled-components";
-import BMHANNAPro from "../../fonts/BMHANNAPro.ttf";
-
-// GlobalStyle 정의
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'BMHANNAPro';
-    src: url(${BMHANNAPro}) format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  body {
-    margin: 0;
-    font-family: 'BMHANNAPro', sans-serif;
-  }
-`;
+import styled from "styled-components";
 
 // Card 스타일 정의
 const Card = styled.div`
@@ -43,14 +27,11 @@ const Text = styled.span`
 
 const Screen = () => {
   return (
-    <>
-      <GlobalStyle /> {/* 글로벌 스타일 적용 */}
-      <Card>
-        <CardContent>
-          <Text>친구</Text>
-        </CardContent>
-      </Card>
-    </>
+    <Card>
+      <CardContent>
+        <Text>친구</Text>
+      </CardContent>
+    </Card>
   );
 };
 

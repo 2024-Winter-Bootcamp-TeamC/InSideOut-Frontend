@@ -1,10 +1,17 @@
-import "./App.css";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import LoginForm from "./pages/login";
+import GlobalStyle from "./styles/GlobalStyle"; // 경로 확인 필수
+
 function App() {
   return (
-    <Router>
-      <Routes></Routes>
-    </Router>
+    <>
+      <GlobalStyle />
+      <Router>
+        <Routes>
+        </Routes>
+      </Router>
+    </>
   );
 }
 

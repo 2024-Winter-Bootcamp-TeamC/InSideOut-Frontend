@@ -14,7 +14,7 @@ const StyledCardContent = styled.div`
   height: 100%;
 `;
 
-const Screen = () => {
+const CharacterFrame = () => {
   return (
     <StyledCard>
       <StyledCardContent />
@@ -22,4 +22,4 @@ const Screen = () => {
   );
 };
 
-export default Screen;
+export default CharacterFrame;

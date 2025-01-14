@@ -9,7 +9,6 @@ function App() {
       <GlobalStyle />
       <Router>
         <Routes>
-          <Route path="/" element={<LoginForm />} />
         </Routes>
       </Router>
     </>

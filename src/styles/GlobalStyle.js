@@ -1,5 +1,8 @@
 // src/styles/GlobalStyle.js
 import { createGlobalStyle } from "styled-components";
+import BMHANNAPro from "../assets/fonts/BMHANNAPro.ttf";
+import IntensaFuente from "../assets/fonts/IntensaFuente.ttf";
+
 
 const GlobalStyle = createGlobalStyle`
 html, body {
@@ -31,6 +34,20 @@ html, body {
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+
+  @font-face {
+    font-family: 'BMHANNAPro';
+    src: url(${BMHANNAPro}) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'IntensaFuente';
+    src: url(${IntensaFuente}) format('truetype');
+    font-weight: normal;
+    font-style: normal; 
   }
 `;
 

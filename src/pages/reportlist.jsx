@@ -9,7 +9,6 @@ import CompanyObject from "../assets/reportlistpage/CompanyObject.png";
 import HomeButton from "../component/button/HomeButton";
 import HomeButtonGIF from "../../public/assets/HomeButton.gif";
 
-// 슬라이드 데이터 (각 이미지 데이터를 배열에 저장)(구슬 사진)
 const slideData = [
   { id: 1, image: FamilyObject, date: "2025.01.03" },
   { id: 2, image: LoveObject, date: "2025.01.04" },
@@ -18,6 +17,19 @@ const slideData = [
   { id: 5, image: FamilyObject, date: "2025.01.07" },
   { id: 6, image: LoveObject, date: "2025.01.08" },
   { id: 7, image: FriendsObject, date: "2025.01.09" },
+  { id: 8, image: CompanyObject, date: "2025.01.10" },
+  { id: 9, image: FamilyObject, date: "2025.01.11" },
+  { id: 10, image: LoveObject, date: "2025.01.12" },
+  { id: 11, image: FriendsObject, date: "2025.01.13" },
+  { id: 12, image: CompanyObject, date: "2025.01.14" },
+  { id: 13, image: FamilyObject, date: "2025.01.15" },
+  { id: 14, image: LoveObject, date: "2025.01.16" },
+  { id: 15, image: FriendsObject, date: "2025.01.17" },
+  { id: 16, image: CompanyObject, date: "2025.01.18" },
+  { id: 17, image: FamilyObject, date: "2025.01.19" },
+  { id: 18, image: LoveObject, date: "2025.01.20" },
+  { id: 19, image: FriendsObject, date: "2025.01.21" },
+  { id: 20, image: CompanyObject, date: "2025.01.22" },
 ];
 
 // 전체 화면 컨테이너 스타일 정의 (배경 이미지 포함)
@@ -27,7 +39,7 @@ const BackGroundContainer = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  padding: 100px 0px; /* 상단과 하단 여백 */
+  padding: 50px 0px; /* 상단과 하단 여백 */
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -39,47 +51,32 @@ const BackGroundContainer = styled.div`
   background-color: #000; /* 배경 색상 설정 (이미지가 없을 경우 대비) */
 `;
 
-// 상단 헤더 영역 스타일 정의 (텍스트 표시)(열람할 감정 구슬을 선택해주세요!)
 const HeaderContainer = styled.div`
   position: absolute;
-  left: 50%;
+  left: 52%;
   transform: translateX(-50%);
   top: 50px;
-  width: 500px;
+  width: 50%;
   height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: "BMHANNAPro", sans-serif;
   color: #fff; /* 텍스트 색상 */
-  font-size: 30px;
+  font-size: 40px;
 `;
 
 // 구슬 컨테이너
 const SliderContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: 80%;
   height: 100%;
   padding: 0 100px;
   overflow: hidden; /* 넘치는 콘텐츠 숨김 */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border: 1px solid #fff;
-`;
 
-// 날짜 표시 스타일
-const DateOverlay = styled.div`
-  position: absolute;
-  top: -20px; /* 구슬 위에 위치 */
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: "BMHANNAPro", sans-serif;
-  font-size: 20px;
-  color: white;
-  text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 */
+  overflow: hidden;
+  border: 0px solid #fff;
 `;
 
 // 슬라이더 내부 아이템을 감싸는 래퍼 스타일 정의
@@ -88,6 +85,8 @@ const SliderWrapper = styled.div`
   gap: 140px; /* 슬라이드 아이템 간 간격 */
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+
   transition: transform 0.7s ease-in-out; /* 이동 시 부드러운 애니메이션 */
   transform: translateX(
     ${(props) => props.translate}px
@@ -97,34 +96,77 @@ const SliderWrapper = styled.div`
 // 각 슬라이드 아이템 스타일 정의
 const SlideItem = styled.div`
   flex: 0 0 auto; /* 크기 고정 */
-  width: 150px;
-  height: 300px;
+  width: 9.375rem;
+  height: 10.875rem;
   background: url(${(props) => props.image}) no-repeat center center; /* 이미지 배경 설정 */
+
   background-size: contain; /* 배경 이미지를 컨테이너에 맞춤 */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   transition:
-    transform 0.3s ease,
-    opacity 0.3s ease; /* 부드러운 확대 및 투명도 전환 */
+    transform 0.8s ease,
+    opacity 0.1s ease; /* 부드러운 확대 및 투명도 전환 */
 
   /* 현재 중앙에 위치한 슬라이드 강조 */
-  ${(props) =>
-    props.isCurrent &&
-    `
-    transform: scale(1.7);  /* 크기 확대 */
-    opacity: 1; /* 완전히 보임 */
-  `}
+  ${({ index, currentIndex }) => {
+    const diff = index - currentIndex; // 현재 위치와의 거리 계산
+    if (diff === 0) {
+      return `
+        transform: scale(1.7)translateY(10px) ; /* 현재 슬라이드 강조 */
+        opacity: 1;
+        &:hover {
+          transform: scale(1.8); /* 호버 시 더 크게 */
+          filter: brightness(1.05); /* 밝기 강조 */
+        }
+      `;
+    } else if (diff === 1) {
+      return `
+        transform: scale(1.2)  translateX(20px) translateY(-30px);  /* 인접 슬라이드 */
+        opacity: 1;
+        top: 100px;
+        
+      `;
+    } else if (diff === -1) {
+      return `
+        transform: scale(1.2)  translateX(-20px) translateY(-30px);  /* 인접 슬라이드 */
+        opacity: 1;
+        top: 100px;
+        
+      `;
+    } else if (diff === 2) {
+      return `
+        transform: scale(0.7) translateX(-60px) translateY(-200px); /* 두 번째 인접 슬라이드 */
+        opacity: 1;
+      `;
+    } else if (diff === -2) {
+      return `
+        transform: scale(0.7) translateX(60px) translateY(-200px); /* 두 번째 인접 슬라이드 */
+        opacity: 1;
+      `;
+    } else {
+      return `
+        transform: scale(0) translateY(-1300px); /* 멀리 있는 슬라이드 */
+        opacity: 0;
+      `;
+    }
+  }}
 `;
-
+const SlideItemContainer = styled.div`
+  width: 9.375rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 100px;
+  align-items: center;
+  flex-shrink: 0;
+  bottom:;
+`;
 // 구슬 아래 빛 효과 스타일 정의
 const LightEffect = styled.div`
-  position: absolute;
   width: 160px; /* 빛의 너비 */
   height: 50px; /* 빛의 높이 */
-  bottom: -10px; /* 구슬 아래 위치 */
-  left: 50%; /* 구슬 중심에 맞춤 */
-  transform: translateX(-50%);
+
   background: radial-gradient(
     circle,
     rgba(243, 255, 154, 1) 10%,
@@ -133,8 +175,57 @@ const LightEffect = styled.div`
   ); /* 빛의 색상과 투명도 설정 */
   border-radius: 50%; /* 둥근 효과 */
   filter: blur(10px); /* 부드럽게 흐릿한 효과 */
-`;
+  transition:
+    transform 0.8s ease,
+    opacity 0.1s ease; /* 부드러운 확대 및 투명도 전환 */
+  ${({ index, currentIndex }) => {
+    const diff = index - currentIndex; // 현재 위치와의 거리 계산
+    if (diff === 0) {
+      return `
+        transform: scale(1.7)translateY(10px) ; /* 현재 슬라이드 강조 */
+        opacity: 1;
 
+      `;
+    } else if (diff === 1) {
+      return `
+        transform: scale(1.2)  translateX(20px) translateY(-30px);  /* 인접 슬라이드 */
+        opacity: 1;
+        top: 100px;
+        
+      `;
+    } else if (diff === -1) {
+      return `
+        transform: scale(1.2)  translateX(-20px) translateY(-30px);  /* 인접 슬라이드 */
+        opacity: 1;
+        top: 100px;
+        
+      `;
+    } else if (diff === 2) {
+      return `
+        transform: scale(0.7) translateX(-60px) translateY(-200px); /* 두 번째 인접 슬라이드 */
+        opacity: 1;
+      `;
+    } else if (diff === -2) {
+      return `
+        transform: scale(0.7) translateX(60px) translateY(-200px); /* 두 번째 인접 슬라이드 */
+        opacity: 1;
+      `;
+    } else {
+      return `
+        transform: scale(0) translateY(-1300px); /* 멀리 있는 슬라이드 */
+        opacity: 0;
+      `;
+    }
+  }}
+`;
+// 날짜 표시 스타일
+const DateOverlay = styled.div`
+  font-family: "BMHANNAPro", sans-serif;
+  font-size: 30px;
+  color: white;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 */
+`;
 // 메인 컴포넌트 정의
 const ReportList = () => {
   const [currentIndex, setCurrentIndex] = useState(0); // 현재 슬라이드 인덱스 상태
@@ -205,14 +296,16 @@ const ReportList = () => {
         {/* 슬라이더 아이템들 */}
         <SliderWrapper translate={calculateTranslate()}>
           {slideData.map((item, index) => (
-            <div key={item.id} style={{ position: "relative" }}>
+            <SlideItemContainer key={item.id}>
+              {index == currentIndex && <DateOverlay>{item.date}</DateOverlay>}
               <SlideItem
                 image={item.image}
-                isCurrent={index === currentIndex}
+                index={index}
+                currentIndex={currentIndex}
               />
-              <LightEffect /> {/* 구슬 밑에 빛 추가 */}
-              <DateOverlay>{item.date}</DateOverlay>
-            </div>
+              <LightEffect index={index} currentIndex={currentIndex} />{" "}
+              {/* 구슬 밑에 빛 추가 */}
+            </SlideItemContainer>
           ))}
         </SliderWrapper>
       </SliderContainer>

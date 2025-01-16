@@ -1,0 +1,17 @@
+/* BackButton 컨테이너 스타일 */
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 53px; /* 컨테이너 너비 */
+  height: 47px; /* 컨테이너 높이 */
+  background-color: transparent; /* 필요 시 배경색 추가 가능 */
+  cursor: pointer; /* 클릭 가능한 모양의 커서 */
+}
+
+/* SVG 아이콘 스타일 */
+.back-button-icon {
+  width: 100%; /* 아이콘 너비 */
+  height: 100%; /* 아이콘 높이 */
+  color: black; /* 아이콘 색상 */
+}

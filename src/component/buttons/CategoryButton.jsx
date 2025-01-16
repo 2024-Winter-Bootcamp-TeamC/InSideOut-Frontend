@@ -48,39 +48,35 @@ const DropDownItem = styled.li`
   height: 35px; /* 항목 높이 */
   display: flex; /* 내용 정렬 */
   justify-content: center; /* 수평 가운데 정렬 */
-  align-items: center; /* 수직 가운데 정렬 */
-  font-weight: normal; /* 폰트 두께 */
-  margin-left: 0px; /* 항목의 왼쪽 여백 제거 */
+  align-items: center;
+  font-weight: normal;
+  margin-left: 0px; 
 
   &:hover {
-    background-color: rgba(148, 126, 224, 1); /* 호버 시 배경색 */
-    border-radius: 30px; /* 둥근 모서리 유지 */
+    background-color: rgba(148, 126, 224, 1);
+    border-radius: 30px; 
   }
 `;
 
-// 카테고리 버튼 컴포넌트 정의
 const CategoryButton = ({ categories, onCategorySelect }) => {
-  const [isOpen, setIsOpen] = useState(false); // 드롭다운 열림 여부 상태
-  const [selectedCategory, setSelectedCategory] = useState("전체"); // 현재 선택된 카테고리 상태
+  const [isOpen, setIsOpen] = useState(false); 
+  const [selectedCategory, setSelectedCategory] = useState("전체"); 
 
-  // 드롭다운 토글 함수
   const toggleDropdown = () => setIsOpen((prev) => !prev);
 
-  // 카테고리 선택 처리 함수
   const handleSelect = (category) => {
-    setSelectedCategory(category); // 선택된 카테고리 업데이트
-    onCategorySelect(category); // 상위 컴포넌트에 선택된 카테고리 전달
-    setIsOpen(false); // 드롭다운 닫기
+    setSelectedCategory(category); 
+    onCategorySelect(category); 
+    setIsOpen(false); 
   };
 
   return (
     <div style={{ position: "relative" }}>
-      {/* 선택된 카테고리를 표시하는 버튼 */}
+    
       <Card onClick={toggleDropdown}>{selectedCategory}</Card>
 
-      {/* 드롭다운 리스트 */}
       <DropDownList isOpen={isOpen}>
-        {/* 드롭다운 항목들 */}
+
         {categories.map((category, index) => (
           <DropDownItem key={index} onClick={() => handleSelect(category)}>
             {category}
@@ -91,10 +87,10 @@ const CategoryButton = ({ categories, onCategorySelect }) => {
   );
 };
 
-// PropTypes를 이용한 props 검증
+
 CategoryButton.propTypes = {
-  categories: PropTypes.arrayOf(PropTypes.string).isRequired, // categories는 문자열 배열이어야 함
-  onCategorySelect: PropTypes.func.isRequired, // onCategorySelect는 함수여야 함
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired, 
+  onCategorySelect: PropTypes.func.isRequired, 
 };
 
 export default CategoryButton;

@@ -1,6 +1,6 @@
 import styled from "styled-components"; // styled-components 라이브러리 임포트
 import BackGroundPNG from "../assets/categorypage/BackGround.png"; // 배경 이미지 가져오기
-import CategoryImageFrame from "../component/categorypage/CategoryImageFrame"; // 카테고리 이미지 프레임 컴포넌트
+import CategoryImageFrame from "../component/category/CategoryImageFrame"; // 카테고리 이미지 프레임 컴포넌트
 import ReportButton from "../component/Button/ReportButton"; // 신고 버튼 컴포넌트
 import FamilyGIF from "../assets/categorypage/Family.gif"; // 가족 GIF
 import CompanyGIF from "../assets/categorypage/Company.gif"; // 회사 GIF

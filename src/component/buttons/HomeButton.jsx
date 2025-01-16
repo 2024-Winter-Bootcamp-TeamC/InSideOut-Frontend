@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const HomeButton = ({ gifPath, onClick }) => {
   return (
-    <div className="home-button-card" onClick={onClick} role="button">
+    <div className="home-button-card" onClick={onClick}>
       <div className="home-button-card-content">
         {/* 컨테이너 내부 컨텐츠 */}
         <div className="home-button-aspect-ratio">

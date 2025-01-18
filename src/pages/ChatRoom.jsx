@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
-import Modal from "../component/ChatRoom/ChatFinishModal";
-import ChatRoomBackground from "../assets/ChatRoom/Background.png";
-import CharacterFrame from "../component/ChatRoom/CharacterFrame";
-import AngerPNG from "../assets/ChatRoom/Anger.png";
-import JoyPNG from "../assets/ChatRoom/Joy.png";
-import SadnessPNG from "../assets/ChatRoom/Sadness.png";
-import EmbarrassmentPNG from "../assets/ChatRoom/Embarrassment.png";
+import Modal from "../component/chatroom/ChatFinishModal";
+import ChatRoomBackground from "../assets/chatroom/Background.png";
+import CharacterFrame from "../component/chatroom/CharacterFrame";
+import AngerPNG from "../assets/chatroom/Anger.png";
+import JoyPNG from "../assets/chatroom/Joy.png";
+import SadnessPNG from "../assets/chatroom/Sadness.png";
+import EmbarrassmentPNG from "../assets/chatroom/Embarrassment.png";
 
 const BackgroundContainer = styled.div`
   width: 100vw;

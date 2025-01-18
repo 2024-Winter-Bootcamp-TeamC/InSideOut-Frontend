@@ -3,7 +3,7 @@ import BackGroundPNG from "../assets/preparation.png";
 import text from "../assets/text1.png";
 import { useState } from "react";
 const Preparation = () => {
-  const [images, setImages] = useState([null, null, null, null]); // 4개의 이미지 슬롯 관리
+  const [images, setImages] = useState([null, null, null]); // 4개의 이미지 슬롯 관리
   const [currentIndex, setCurrentIndex] = useState(3); // 현재 추가할 프레임 인덱스 (4부터 시작)
 
   // 파일 업로드 핸들러
@@ -16,7 +16,7 @@ const Preparation = () => {
         updatedImages[currentIndex] = reader.result; // 현재 인덱스에 이미지 추가
         setImages(updatedImages);
 
-        // 다음 인덱스로 이동 (3 -> 2 -> 1 -> 0)
+        // 다음 인덱스로 이동 (2 -> 1 -> 0)
         if (currentIndex === 0) {
           setCurrentIndex(-2); // 모든 이미지가 채워지면 인덱스를 -1로 설정하여 + 버튼 숨김
         } else {
@@ -54,11 +54,6 @@ const Preparation = () => {
           <ImageAttachFrame3
             style={{
               backgroundImage: images[2] ? `url(${images[2]})` : "none",
-            }}
-          />
-          <ImageAttachFrame4
-            style={{
-              backgroundImage: images[3] ? `url(${images[3]})` : "none",
             }}
           />
 
@@ -279,7 +274,6 @@ const TextImage = styled.img`
   top: 23%;
   left: 48%;
   flex-shrink: 0;
-  border: 0px solid #fff;
 `;
 const HiddenInput = styled.input`
   display: none; /* 숨겨진 파일 입력 필드 */

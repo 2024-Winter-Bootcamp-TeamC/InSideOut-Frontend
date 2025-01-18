@@ -1,15 +1,15 @@
 import styled from "styled-components"; // styled-components 라이브러리 임포트
-import BackGroundPNG from "../assets/categorypage/BackGround.png"; // 배경 이미지 가져오기
+import BackGroundPNG from "../assets/category/BackGround.png"; // 배경 이미지 가져오기
 import CategoryImageFrame from "../component/category/CategoryImageFrame"; // 카테고리 이미지 프레임 컴포넌트
-import ReportButton from "../component/Button/ReportButton"; // 신고 버튼 컴포넌트
-import FamilyGIF from "../assets/categorypage/Family.gif"; // 가족 GIF
-import CompanyGIF from "../assets/categorypage/Company.gif"; // 회사 GIF
-import FriendsGIF from "../assets/categorypage/Friends.gif"; // 친구 GIF
-import LoveGIF from "../assets/categorypage/Love.gif"; // 사랑 GIF
-import StaticFamily from "../assets/categorypage/StaticFamily.png"; // 가족 정적 이미지
-import StaticFriends from "../assets/categorypage/StaticFriends.png"; // 친구 정적 이미지
-import StaticCompany from "../assets/categorypage/StaticCompany.png"; // 회사 정적 이미지
-import StaticLove from "../assets/categorypage/StaticLove.png"; // 사랑 정적 이미지
+import ReportButton from "../component/buttons/ReportButton"; // 신고 버튼 컴포넌트
+import FamilyGIF from "../assets/category/Family.gif"; // 가족 GIF
+import CompanyGIF from "../assets/category/Company.gif"; // 회사 GIF
+import FriendsGIF from "../assets/category/Friends.gif"; // 친구 GIF
+import LoveGIF from "../assets/category/Love.gif"; // 사랑 GIF
+import StaticFamily from "../assets/category/StaticFamily.png"; // 가족 정적 이미지
+import StaticFriends from "../assets/category/StaticFriends.png"; // 친구 정적 이미지
+import StaticCompany from "../assets/category/StaticCompany.png"; // 회사 정적 이미지
+import StaticLove from "../assets/category/StaticLove.png"; // 사랑 정적 이미지
 
 // 배경 컨테이너 스타일 정의
 const BackgroundContainer = styled.div`

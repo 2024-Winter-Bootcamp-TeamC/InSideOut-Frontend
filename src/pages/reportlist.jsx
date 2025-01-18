@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import BackGround from "../assets/reportlistpage/BackGround.png";
+import BackGround from "../assets/reportlist/BackGround.png";
 import { useState, useEffect, useRef } from "react";
-import CategoryButton from "../component/button/CategoryButton";
-import FamilyObject from "../assets/reportlistpage/FamilyObject.png";
-import LoveObject from "../assets/reportlistpage/LoveObject.png";
-import FriendsObject from "../assets/reportlistpage/FriendsObject.png";
-import CompanyObject from "../assets/reportlistpage/CompanyObject.png";
-import HomeButton from "../component/button/HomeButton";
-import HomeButtonGIF from "../../public/assets/HomeButton.gif";
+import CategoryButton from "../component/buttons/CategoryButton";
+import FamilyObject from "../assets/reportlist/FamilyObject.png";
+import LoveObject from "../assets/reportlist/LoveObject.png";
+import FriendsObject from "../assets/reportlist/FriendsObject.png";
+import CompanyObject from "../assets/reportlist/CompanyObject.png";
+import HomeButton from "../component/buttons/HomeButton";
+import HomeButtonGIF from "../assets/HomeButton.svg";
 
 const slideData = [
   { id: 1, image: FamilyObject, date: "2025.01.03" },

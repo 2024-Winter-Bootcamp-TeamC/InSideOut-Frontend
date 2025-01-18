@@ -8,9 +8,8 @@ import 당황이 from "../assets/당황이.png";
 import 소심이 from "../assets/소심이.png";
 import 불안이 from "../assets/불안이.png";
 import HomeButton from "../component/buttons/HomeButton.jsx";
-import BackButton from "../component/buttons/BackButton.jsx";
 import HomeButtonGIF from "../assets/HomeButton.svg";
-import { useNavigate } from "react-router-dom";
+
 import {
   Chart,
   PieController,
@@ -63,33 +62,31 @@ const smulData = {
   smultext:
     "상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요아아아아아아아아아아",
   emotion: {
-    소심이:
-      "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다아아아아아아아제안했다아아아아아아.",
-    슬픔이:
-      "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다.",
     버럭이:
+      "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다아아아아아아아제안했다아아아아아아.",
+    까칠이:
+      "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다.",
+    슬픔이:
       "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다.",
   },
   wording: {
-    기쁨이: "좋아요",
+    버럭이: "좋아요",
   },
   per: {
-    기쁨: 40,
-    슬픔: 10,
-    버럭: 10,
-    까칠: 10,
-    소심: 10,
-    불안: 10,
-    당황: 10,
+    기쁨: 30.5,
+    슬픔: 19.5,
+    버럭: 8.5,
+    까칠: 11.5,
+    소심: 0,
+    불안: 15.5,
+    당황: 14.5,
   },
 };
 Chart.register(PieController, ArcElement, Title, Tooltip, Legend);
 const ReportDetail = () => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
-  const handleHomeButtonClick = () => {
-    navigate("/");
-  };
+  const handleHomeButtonClick = () => {};
   useEffect(() => {
     const canvas = chartRef.current;
     if (chartInstance.current) {

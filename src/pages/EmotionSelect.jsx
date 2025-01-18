@@ -209,7 +209,7 @@ const EmotionSelect = () => {
   return (
     <BackgroundContainer>
       <EmotionSelectTitle>
-        상담받을 감정을 최대 3가지 선택해주세요!
+        상담받을 감정을 3가지 선택해주세요!
       </EmotionSelectTitle>
       <EmotionWrapper>
         {/* 감정별 버튼과 이미지 */}

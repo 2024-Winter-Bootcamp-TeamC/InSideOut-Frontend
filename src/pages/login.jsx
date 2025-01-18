@@ -51,8 +51,8 @@ const Login = () => {
               bgColor="#564997"
               isModalOpen={isModalOpen}
             />
-            <LoginButton isModalOpen={isModalOpen} bgColor="#564997">
-              GO
+            <LoginButton isModalOpen={isModalOpen} bgColor="#FFFFFF">
+              OK
             </LoginButton>
             <SignUpModalCloseButton onClick={handleModalClose}>
               ×
@@ -80,6 +80,7 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
+  position: relat
 `;
 
 const LogoBox = styled.div`
@@ -159,7 +160,7 @@ const UserNameInput = styled.input`
   color: #000;
   background-color: ${(props) => props.bgColor || "#fff"}; /* 기본값 #fff */
   font-size: 35px;
-  font-style: normal;
+  font-family: 'IntensaFuente', sans-serif;
   font-weight: 400;
   border: none;
   line-height: normal;
@@ -224,9 +225,9 @@ const SmallFrame = styled.div`
 `;
 const SmallFrameSingUp = styled.div`
   width: 1%;
-  height: 9.5%;
+  height: 10%;
   position: absolute;
-  top: 12.5%;
+  top: 14%;
   left: 0%;
   z-index: 1;
   background: #fff;

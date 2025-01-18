@@ -1,19 +1,29 @@
-import "./App.css";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import GlobalStyle from "./styles/GlobalStyle";
+import ReportDetail from "./pages/ReportDetail";
+import Category from "./pages/Category";
+import ChatRoom from "./pages/ChatRoom";
+import Login from "./pages/Login";
+import ReportList from "./pages/ReportList";
+import Preparation from "./pages/Preparation";
+import EmotionSelect from "./pages/EmotionSelect";
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route element={<HomeLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
-      </Routes>
-    </Router>
+    <>
+      <GlobalStyle />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/category" element={<Category />} />
+          <Route path="/chatroom" element={<ChatRoom />} />
+          <Route path="/preparation" element={<Preparation />} />
+          <Route path="/emotionselect" element={<EmotionSelect />} />
+          <Route path="/reportlist" element={<ReportList />} />
+          <Route path="/reportdetail" element={<ReportDetail />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 

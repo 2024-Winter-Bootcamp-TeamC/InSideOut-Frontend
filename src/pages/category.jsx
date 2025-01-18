@@ -1,4 +1,6 @@
 import styled from "styled-components"; // styled-components 라이브러리 임포트
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import BackGroundPNG from "../assets/category/BackGround.png"; // 배경 이미지 가져오기
 import CategoryImageFrame from "../component/category/CategoryImageFrame"; // 카테고리 이미지 프레임 컴포넌트
 import ReportButton from "../component/buttons/ReportButton"; // 신고 버튼 컴포넌트
@@ -79,6 +81,13 @@ const handleCategoryClick = () => {
 
 // 커스텀 컴포넌트 정의
 const CustomComponent = () => {
+  const location = useLocation();
+  const { user_id } = location.state || {};
+
+  useEffect(() => {
+    console.log("user_id: ", user_id); // userId 출력
+  }, [user_id]);
+
   return (
     <BackgroundContainer>
       {/* 콘텐츠 컨테이너 */}

@@ -1,8 +1,14 @@
 import styled from "styled-components";
 import BackGroundPNG from "../assets/login.jpg";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 const Login = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [nickname, setNickname] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -11,6 +17,54 @@ const Login = () => {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
+
+  // 회원가입 요청
+  const handleSignUp = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/users/signup",
+        {
+          nickname,
+          password,
+        }
+      );
+
+      if (response.status === 201 || response.status === 200) {
+        alert("회원가입 성공!");
+        setNickname("");
+        setPassword("");
+        handleModalClose(); // 회원가입 성공 시 모달 닫기
+      } else {
+        alert("회원가입 실패!");
+      }
+    } catch {
+      alert("회원가입 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 로그인 요청
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/users/login",
+        {
+          nickname,
+          password,
+        }
+      );
+
+      if (response.status === 200) {
+        const { user_id } = response.data; // 응답 데이터에서 ID 추출
+        alert("로그인 성공!");
+        navigate("/category", { state: { user_id } }); // 다음 페이지로 이동
+      } else {
+        alert("로그인 실패!");
+      }
+    } catch {
+      alert("로그인 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <Container>
       <LogoBox>
@@ -24,16 +78,20 @@ const Login = () => {
         <UserNameInput
           type="text"
           placeholder="Username"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
           bgColor="#fff"
           isModalOpen={isModalOpen}
         />
         <PasswordInput
           type="password"
           placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           bgColor="#fff"
           isModalOpen={isModalOpen}
         />
-        <LoginButton>GO</LoginButton>
+        <LoginButton onClick={handleLogin}>GO</LoginButton>
         <SmallFrame />
         {!isModalOpen && <SignUp onClick={handleModalOpen}>+</SignUp>}
         {isModalOpen && (
@@ -42,16 +100,24 @@ const Login = () => {
             <UserNameInput
               type="text"
               placeholder="Username"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
               bgColor="#564997"
               isModalOpen={isModalOpen}
             />
             <PasswordInput
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               bgColor="#564997"
               isModalOpen={isModalOpen}
             />
-            <LoginButton isModalOpen={isModalOpen} bgColor="#FFFFFF">
+            <LoginButton
+              onClick={handleSignUp}
+              isModalOpen={isModalOpen}
+              bgColor="#FFFFFF"
+            >
               OK
             </LoginButton>
             <SignUpModalCloseButton onClick={handleModalClose}>
@@ -80,7 +146,7 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  position: relat
+  position: relat;
 `;
 
 const LogoBox = styled.div`
@@ -160,7 +226,7 @@ const UserNameInput = styled.input`
   color: #000;
   background-color: ${(props) => props.bgColor || "#fff"}; /* 기본값 #fff */
   font-size: 35px;
-  font-family: 'IntensaFuente', sans-serif;
+  font-family: "IntensaFuente", sans-serif;
   font-weight: 400;
   border: none;
   line-height: normal;

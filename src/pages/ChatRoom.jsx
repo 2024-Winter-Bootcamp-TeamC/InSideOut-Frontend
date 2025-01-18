@@ -16,42 +16,65 @@ const BackgroundContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
+  align-items: flex-start;
+  box-sizing: border-box; 
   overflow: hidden;
-  padding: 40px 100px;
+  padding: 5rem 11rem; /*위아래, 양쪽*/
 `;
 
 const CharacterContainerWrapper = styled.div`
-  width: 50%; /* 오른쪽 영역 너비 */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-left: 20px;
-  justify-content: space-between;
-  box-sizing: border-box;
+  width: 45%; /* 왼쪽 영역 너비 */
+  height: 100%;
+  display: flex; /* 플렉스 박스를 사용하여 정렬 */
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  align-items: center; /* 가로 가운데 정렬 */
+  justify-content: center; /* 세로 가운데 정렬 */
 `;
 
 const CharacterContainer = styled.div`
+  width: 100%;
+  aspect-ratio: 1; /* 1:1 비율을 유지 */
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  margin-right: 20px;
-  box-sizing: border-box;
+  grid-template-columns: repeat(2, 1fr); /* 두 개의 컬럼 */
+  grid-template-rows: repeat(2, 1fr); /* 두 개의 행 */
+  margin: 1.1rem;
+
+  /* 각 그리드 아이템의 정렬 */
+  & > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const ChatroomContaninerWrapper =styled.div`
+  width: 47.5%; /* 오른쪽 영역 너비 */
+  height:105%;
+  display: flex; /* 플렉스 박스를 사용하여 정렬 */
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  align-items: center; /* 가로 가운데 정렬 */
+  justify-content: center; /* 세로 가운데 정렬 */
+`;
+
+const SecondWrapper = styled.div`
+  width: 100%;
+  aspect-ratio: 1; /* 1:1 비율을 유지 */
+  overflow-y: hidden;
+  border-radius: 20px;
+  background-color: #ffffffba;
+  display: flex;
+  flex-direction: column;
+  margin-bottom:0.6rem;
 `;
 
 const ChatContainerWrapper = styled.div`
-  width: 50%; /* 오른쪽 영역 너비 */
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 89.5%; /* 상하 공간 적절히 사용 */
-  margin-left: 20px;
-  justify-content: center;
-`;
+  flex-direction: column; /* 세로 정렬을 유지합니다 */
+  justify-content: flex-end; /* 하단 정렬 */
+  align-items: center; /* 가로 정렬 */
+  height: 100%; /* 부모 컨테이너의 높이를 채웁니다 */
+  width: 100%;
+  `;
 
 const ModeSelectWrapper = styled.div`
   position: absolute;
@@ -106,14 +129,13 @@ const ToggleText = styled.span`
 
 const ChatContainer = styled.div`
   width: 100%;
-  height: 80%;
+  height: 82%;
   overflow-y: auto;
   overflow-x: hidden;
-  border-radius: 20px;
-  background-color: #ffffffba;
   display: flex;
   flex-direction: column-reverse;
   padding: 3% 5%;
+
 `;
 
 const Message = styled.div`
@@ -132,13 +154,13 @@ const Message = styled.div`
 const InputContainer = styled.div`
   display: flex;
   width: 100%;
-  height: 10%;
+  height: 3.3rem;
   align-items: center;
   background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 10px;
-  margin: 10px auto;
+  padding: 8px;
+  margin-top:1rem;
 `;
 
 const TextInput = styled.input`
@@ -153,15 +175,15 @@ const TextInput = styled.input`
 const ChatFinishButton = styled.button`
   background-color: #f44336;
   border-radius: 1.25rem;
-  overflow: hidden;
-  width: 40%;
-  margin-bottom: 20px;
+  width: 17rem;
+  height: 3.3rem;
   font-family: "BMHANNAPro", sans-serif;
   font-size: 1.5rem;
   color: white;
   transition: transform 0.3s ease;
   border: none;
-  outline: none; /* 기본 포커스 테두리 제거 */
+  outline: none;
+  
   &:hover {
     transform: scale(1.05);
   }
@@ -260,9 +282,9 @@ const ChatRoom = () => {
           대화 끝내기
         </ChatFinishButton>
       </CharacterContainerWrapper>
-
-      <ChatContainerWrapper>
-        <ModeSelectWrapper $isActive={isActive} onClick={handleToggle}>
+      <ChatroomContaninerWrapper>
+      <SecondWrapper>
+      <ModeSelectWrapper $isActive={isActive} onClick={handleToggle}>
           <ToggleSVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 36">
             <rect
               x="1"
@@ -283,6 +305,7 @@ const ChatRoom = () => {
           </ToggleSVG>
           <ToggleText>{isActive ? "일반 모드" : "논쟁 모드"}</ToggleText>
         </ModeSelectWrapper>
+      <ChatContainerWrapper>
         <ChatContainer ref={chatContainerRef}>
           {messages.map((message, index) => (
             <Message key={index} $isUser={message.isUser}>
@@ -290,7 +313,9 @@ const ChatRoom = () => {
             </Message>
           ))}
         </ChatContainer>
-        <InputContainer>
+      </ChatContainerWrapper>
+      </SecondWrapper>
+      <InputContainer>
           <TextInput
             type="text"
             placeholder="메시지를 입력해주세요."
@@ -321,7 +346,7 @@ const ChatRoom = () => {
             />
           </SvgSendButton>
         </InputContainer>
-      </ChatContainerWrapper>
+        </ChatroomContaninerWrapper>
       {isModalOpen && (
         <Modal onConfirm={handleModalConfirm} onCancel={handleModalCancel} />
       )}

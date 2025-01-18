@@ -4,7 +4,7 @@ import GlobalStyle from "./styles/GlobalStyle";
 import ReportDetail from "./pages/ReportDetail";
 import Category from "./pages/Category";
 import ChatRoom from "./pages/ChatRoom";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 import ReportList from "./pages/ReportList";
 import Preparation from "./pages/Preparation";
 import EmotionSelect from "./pages/EmotionSelect";

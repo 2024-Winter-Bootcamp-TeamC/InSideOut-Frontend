@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import BackGround from "../assets/reportlist/BackGround.png";
-import { useState, useEffect, useRef } from "react";
 import CategoryButton from "../component/buttons/CategoryButton";
 import FamilyObject from "../assets/reportlist/FamilyObject.png";
 import LoveObject from "../assets/reportlist/LoveObject.png";
@@ -8,29 +7,16 @@ import FriendsObject from "../assets/reportlist/FriendsObject.png";
 import CompanyObject from "../assets/reportlist/CompanyObject.png";
 import HomeButton from "../component/buttons/HomeButton";
 import HomeButtonGIF from "../assets/HomeButton.svg";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const slideData = [
-  { id: 1, image: FamilyObject, date: "2025.01.03" },
-  { id: 2, image: LoveObject, date: "2025.01.04" },
-  { id: 3, image: FriendsObject, date: "2025.01.05" },
-  { id: 4, image: CompanyObject, date: "2025.01.06" },
-  { id: 5, image: FamilyObject, date: "2025.01.07" },
-  { id: 6, image: LoveObject, date: "2025.01.08" },
-  { id: 7, image: FriendsObject, date: "2025.01.09" },
-  { id: 8, image: CompanyObject, date: "2025.01.10" },
-  { id: 9, image: FamilyObject, date: "2025.01.11" },
-  { id: 10, image: LoveObject, date: "2025.01.12" },
-  { id: 11, image: FriendsObject, date: "2025.01.13" },
-  { id: 12, image: CompanyObject, date: "2025.01.14" },
-  { id: 13, image: FamilyObject, date: "2025.01.15" },
-  { id: 14, image: LoveObject, date: "2025.01.16" },
-  { id: 15, image: FriendsObject, date: "2025.01.17" },
-  { id: 16, image: CompanyObject, date: "2025.01.18" },
-  { id: 17, image: FamilyObject, date: "2025.01.19" },
-  { id: 18, image: LoveObject, date: "2025.01.20" },
-  { id: 19, image: FriendsObject, date: "2025.01.21" },
-  { id: 20, image: CompanyObject, date: "2025.01.22" },
-];
+const categoryImages = {
+  가족: FamilyObject,
+  친구: FriendsObject,
+  사랑: LoveObject,
+  회사: CompanyObject,
+};
 
 // 전체 화면 컨테이너 스타일 정의 (배경 이미지 포함)
 const BackGroundContainer = styled.div`
@@ -228,16 +214,63 @@ const DateOverlay = styled.div`
 `;
 // 메인 컴포넌트 정의
 const ReportList = () => {
-  const [currentIndex, setCurrentIndex] = useState(0); // 현재 슬라이드 인덱스 상태
-  const sliderContainerRef = useRef(null); // 슬라이더 컨테이너 참조
-  const [centerOffset, setCenterOffset] = useState(0); // 화면 중심 오프셋 계산
-  const slideWidth = 290; // 슬라이드 하나의 너비와 간격
-  const categories = ["전체", "가족", "친구", "사랑", "회사"]; // 카테고리 리스트
+  const location = useLocation();
+  const { user_id } = location.state || {};
+  const [reports, setReports] = useState([]);
+  const [filteredReports, setFilteredReports] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const sliderContainerRef = useRef(null);
+  const [centerOffset, setCenterOffset] = useState(0);
+  const slideWidth = 290;
+  const categories = ["전체", "가족", "친구", "사랑", "회사"];
+  const navigate = useNavigate();
+
+  const fetchReports = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/reports/${user_id}`
+      );
+      if (response.status === 200 && response.data.status === "success") {
+        // 서버 데이터 정리: category 값에서 불필요한 이스케이프 문자 제거
+        const cleanedData = response.data.data.map((report) => ({
+          ...report,
+          category: report.category.replace(/["\\]/g, ""), // 이스케이프 문자 제거
+        }));
+        console.log("GET 성공:", cleanedData);
+        setReports(cleanedData);
+        setFilteredReports(cleanedData);
+      } else {
+        console.error("GET 요청 실패:", response.data.message);
+      }
+    } catch (error) {
+      console.error("GET 요청 오류:", error);
+    }
+  }, [user_id]);
+
+  useEffect(() => {
+    if (user_id) {
+      fetchReports();
+    }
+  }, [user_id, fetchReports]);
+
+  useEffect(() => {
+    // 데이터를 가져온 후 "전체" 카테고리로 초기 필터링 설정
+    if (reports.length > 0) {
+      setFilteredReports(reports); // 전체 데이터를 기본값으로 설정
+    }
+  }, [reports]);
 
   // 카테고리 선택 처리 함수
+  // 카테고리 선택 처리 함수
+  // 카테고리 선택 처리 함수
   const handleCategorySelect = (category) => {
-    console.log("선택된 카테고리:", category);
-    // 선택된 카테고리를 처리하는 로직
+    if (category === "전체") {
+      setFilteredReports(reports); // 전체 데이터를 보여줌
+    } else {
+      const filtered = reports.filter((report) => report.category === category);
+      setFilteredReports(filtered); // 선택된 카테고리의 데이터만 설정
+    }
+    setCurrentIndex(0); // 슬라이더 인덱스를 초기화
   };
 
   // 초기 화면 로드 시 중심 위치 계산
@@ -260,7 +293,7 @@ const ReportList = () => {
 
   // 슬라이드 오른쪽 이동
   const scrollRight = () => {
-    setCurrentIndex((prev) => Math.min(prev + 1, slideData.length - 1)); // 맨 오른쪽 이동 제한
+    setCurrentIndex((prev) => Math.min(prev + 1, filteredReports.length - 1)); // 맨 오른쪽 이동 제한
   };
 
   // 마우스 휠 이벤트 처리 함수
@@ -275,6 +308,7 @@ const ReportList = () => {
   // 홈 버튼 클릭 처리 함수
   const handleHomeButtonClick = () => {
     console.log("홈 버튼 클릭");
+    navigate("/category", { state: { user_id } });
     // 홈 버튼 클릭 시 동작 추가
   };
 
@@ -295,11 +329,13 @@ const ReportList = () => {
       <SliderContainer ref={sliderContainerRef} onWheel={handleWheel}>
         {/* 슬라이더 아이템들 */}
         <SliderWrapper translate={calculateTranslate()}>
-          {slideData.map((item, index) => (
-            <SlideItemContainer key={item.id}>
-              {index == currentIndex && <DateOverlay>{item.date}</DateOverlay>}
+          {filteredReports.map((report, index) => (
+            <SlideItemContainer key={report.report_id}>
+              {index == currentIndex && (
+                <DateOverlay>{report.title}</DateOverlay>
+              )}
               <SlideItem
-                image={item.image}
+                image={categoryImages[report.category]}
                 index={index}
                 currentIndex={currentIndex}
               />

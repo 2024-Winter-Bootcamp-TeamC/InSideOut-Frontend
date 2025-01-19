@@ -40,7 +40,7 @@ const WarningText = styled.div`
   color: red;
   font-size: 1rem;
   font-family: "BMHANNAPro", sans-serif;
-  margin-top: 1rem;
+  margin-top: -1rem;
 `;
 
 // 버튼과 이미지를 묶는 컨테이너 정의
@@ -204,6 +204,18 @@ const EmotionSelect = () => {
       }));
       setWarning(false); // 경고 메시지 숨김
     }
+  };
+
+  const handleNextClick = () => {
+    const activeCount = Object.values(activeBacklight).filter(Boolean).length;
+
+    if (activeCount < 3) {
+      setWarning(true); // 3가지 감정을 선택하지   않았을 경우 경고 메시지 표시
+      return;
+    }
+
+    console.log("대화 시작! 선택된 감정:", activeBacklight);
+    // 다음 동작 수행
   };
 
   return (
@@ -373,11 +385,9 @@ const EmotionSelect = () => {
             backgroundcolor="#FCBE84"
           />
         </AnxietyContainer>
-        {warning && (
-          <WarningText>최대 3개의 감정만 선택할 수 있습니다!</WarningText>
-        )}
+        {warning && <WarningText>3가지의 감정을 선택해주세요!</WarningText>}
       </EmotionWrapper>
-      <NextButton onClick={handleButtonClick}>대화하기</NextButton>
+      <NextButton onClick={handleNextClick}>대화하기</NextButton>
     </BackgroundContainer>
   );
 };

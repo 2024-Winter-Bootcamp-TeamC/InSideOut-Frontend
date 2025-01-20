@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import GlobalStyle from "./styles/GlobalStyle";
 import ReportDetail from "./pages/ReportDetail";
-import Category from "./pages/Category";
+import Category from "./pages/category";
 import ChatRoom from "./pages/ChatRoom";
 import Login from "./pages/login";
 import ReportList from "./pages/ReportList";
-import Preparation from "./pages/Preparation";
+import Preparation from "./pages/preparation";
 import EmotionSelect from "./pages/EmotionSelect";
+
 function App() {
   return (
     <>

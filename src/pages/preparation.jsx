@@ -77,14 +77,23 @@ const Preparation = () => {
   };
 
   function dataURLtoFile(dataURL, filename) {
-    let arr = dataURL.split(','), mime = arr[0].match(/:(.*?);/)[1],
-          bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){
-      u8arr[n] = bstr.charCodeAt(n);
+    let arr = dataURL.split(','),
+        mimeMatch = arr[0].match(/^data:(.+?);base64$/); // 더 안전하고 정확한 정규 표현식
+    if (!mimeMatch) {
+        throw new Error('유효하지 않은 데이터 URL입니다.');
     }
-    let file = new File([u8arr], filename, {type:mime});
+    let mime = mimeMatch[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    let file = new File([u8arr], filename, { type: mime });
     return file;
-  }
+}
 
   return (
     <Container>

@@ -9,7 +9,7 @@ import Loading from "../component/loading"; // 이미 작성한 로딩 컴포넌
 const Preparation = () => {
   const [images, setImages] = useState([null, null, null]); // 3개의 이미지 슬롯 관리
   const [currentIndex, setCurrentIndex] = useState(2); // 현재 추가할 프레임 인덱스 (2부터 시작)
-  const [textContent, setTextContent] = useState(""); 
+  const [textContent, setTextContent] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const { user_id, category } = location.state || {};
@@ -22,49 +22,53 @@ const Preparation = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImages(prevImages => {
-          const updatedImages = [...prevImages]; 
-          updatedImages[currentIndex] = reader.result; 
+        setImages((prevImages) => {
+          const updatedImages = [...prevImages];
+          updatedImages[currentIndex] = reader.result;
           setCurrentIndex(currentIndex === 0 ? -2 : currentIndex - 1);
-          return updatedImages; 
+          return updatedImages;
         });
       };
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handleSubmit = async () => {
     if (!textContent.trim()) {
       alert("텍스트를 입력해 주세요.");
       return;
     }
-    
+
     setLoading(true);
 
     const formData = new FormData();
-    
+
     images.forEach((image) => {
       if (image) {
         const file = dataURLtoFile(image, "image.png");
-        formData.append('files', file);
+        formData.append("files", file);
       }
     });
-    
-    formData.append('content', textContent);
-    formData.append('user_id', user_id);
-    formData.append('category', category);
+
+    formData.append("content", textContent);
+    formData.append("user_id", user_id);
+    formData.append("category", category);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/preparations/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      navigate("/emotionselect", { state: { user_id} }); 
+      const response = await axios.post(
+        "http://localhost:8000/api/preparations/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      navigate("/emotionselect", { state: { user_id } });
     } catch (error) {
-      alert("오류가 발생했습니다. 다시 시도하세요")
+      alert("오류가 발생했습니다. 다시 시도하세요");
     } finally {
-      setLoading(false);  // 요청 완료 후 로딩 상태 false로 설정
+      setLoading(false); // 요청 완료 후 로딩 상태 false로 설정
     }
   };
 
@@ -77,23 +81,23 @@ const Preparation = () => {
   };
 
   function dataURLtoFile(dataURL, filename) {
-    let arr = dataURL.split(','),
-        mimeMatch = arr[0].match(/^data:(.+?);base64$/); // 더 안전하고 정확한 정규 표현식
+    let arr = dataURL.split(","),
+      mimeMatch = arr[0].match(/^data:(.+?);base64$/); // 더 안전하고 정확한 정규 표현식
     if (!mimeMatch) {
-        throw new Error('유효하지 않은 데이터 URL입니다.');
+      throw new Error("유효하지 않은 데이터 URL입니다.");
     }
     let mime = mimeMatch[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
 
     while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
+      u8arr[n] = bstr.charCodeAt(n);
     }
 
     let file = new File([u8arr], filename, { type: mime });
     return file;
-}
+  }
 
   return (
     <Container>
@@ -126,18 +130,20 @@ const Preparation = () => {
               backgroundImage: images[2] ? `url(${images[2]})` : "none",
             }}
           />
-          <ImageUpload> + 버튼을 클릭하여 대화 이미지를 업로드 해주세요</ImageUpload>
+          <ImageUpload>
+            {" "}
+            + 버튼을 클릭하여 대화 이미지를 업로드 해주세요
+          </ImageUpload>
         </ImageContainer>
 
         <TextContainer>
-          <Textsimulation>캐릭터들과 대화할 상황을 입력해주세요!</Textsimulation>
+          <Textsimulation>
+            캐릭터들과 대화할 상황을 입력해주세요!
+          </Textsimulation>
           <TextImage />
           <TextBox>
             <InputBoxContainer>
-              <InputBox
-                value={textContent}
-                onChange={handleTextChange}
-              />
+              <InputBox value={textContent} onChange={handleTextChange} />
               <CharCount>
                 {charCount}/{charLimit}
               </CharCount>
@@ -151,7 +157,6 @@ const Preparation = () => {
 };
 
 export default Preparation;
-
 
 const UploadLabel = styled.label`
   position: absolute;
@@ -196,12 +201,12 @@ const ImageContainer = styled.div`
   width: 37rem;
   height: 33rem;
   flex-shrink: 0;
-  top:4.6rem;
-  left:14rem;
+  top: 4.6rem;
+  left: 14rem;
   position: fixed;
   display: flex;
-  justify-content: center;  /* 가로 중앙 정렬 */
-  align-items: center;      /* 세로 중앙 정렬 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
 `;
 
 const ImageAttachFrame = styled.div`
@@ -257,21 +262,20 @@ const ImageUpload = styled.div`
   position: fixed;
   width: 40rem;
   height: 2rem;
-  top:38.5rem;
-  left:10rem;
+  top: 38.5rem;
+  left: 10rem;
   flex-shrink: 0;
   color: #fff;
-  font-family:"BMHANNAPro";
+  font-family: "BMHANNAPro";
   font-size: 30px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  
 `;
 const TextContainer = styled.div`
   width: 40%;
   height: 100%;
-  flex-shrink: 0;  
+  flex-shrink: 0;
   flex-shrink: 0;
   position: relative;
   display: flex;
@@ -280,8 +284,8 @@ const TextBox = styled.div`
   display: flex;
   width: 32rem;
   height: 15rem;
-  top:22.4rem;
-  left:51rem;
+  top: 22.4rem;
+  left: 51rem;
   flex-direction: column;
   align-items: flex-start;
   position: fixed;
@@ -328,20 +332,18 @@ const InputBox = styled.textarea`
   max-height: 200px;
   white-space: pre-wrap; /* 줄 바꿈 허용 */
   word-wrap: break-word; /* 긴 단어 줄바꿈 */
-  
+
   /* 텍스트가 넘치면 세로로 스크롤이 가능하게 함 */
   overflow-x: hidden; /* 가로 스크롤 없애기 */
 `;
-
-
 
 const Textsimulation = styled.div`
   width: 100%;
   position: fixed;
   flex-shrink: 0;
   color: #fff;
-  top:7rem;
-  left:55rem;
+  top: 7rem;
+  left: 55rem;
   font-family: "BMHANNAPro";
   font-size: 25px;
   font-style: normal;
@@ -353,8 +355,8 @@ const TextImage = styled.div`
   background-image: url(${text});
   width: 50%;
   height: 25%;
-  top:14rem;
-  left:68rem;
+  top: 14rem;
+  left: 68rem;
   flex-shrink: 0;
   max-width: 220px; /* 최대 너비 100% */
   max-height: 134px; /* 최대 높이 100% */
@@ -376,6 +378,19 @@ const ContinueButton = styled.button`
   border-radius: 30px;
   background: #fff;
   font-family: "BMHANNAPro";
+
+  transition: transform 0.3s ease;
+  outline: none;
+  box-shadow: none;
+
+  &:hover {
+    transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */
+    z-index: 3;
+  }
+
+  &:active {
+    transform: scale(0.95); /* 버튼 클릭 시 크기를 0.95배 감소 */
+  }
 `;
 
 const CharCount = styled.div`

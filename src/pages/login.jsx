@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import BackGroundPNG from "../assets/login.jpg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,16 +6,21 @@ import axios from "axios";
 
 const Login = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalClosing, setIsModalClosing] = useState(false);
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
+    setIsModalClosing(false);
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
+    setIsModalClosing(true);
+    setTimeout(() => {
+      setIsModalOpen(false);
+    }, 500);
   };
 
   // 회원가입 요청
@@ -95,7 +100,7 @@ const Login = () => {
         <SmallFrame />
         {!isModalOpen && <SignUp onClick={handleModalOpen}>+</SignUp>}
         {isModalOpen && (
-          <SignUpModal>
+          <SignUpModal isClosing={isModalClosing}>
             <SignUpLogo>SignUp</SignUpLogo>
             <UserNameInput
               type="text"
@@ -123,7 +128,7 @@ const Login = () => {
             <SignUpModalCloseButton onClick={handleModalClose}>
               ×
             </SignUpModalCloseButton>
-            <SmallFrameSingUp />
+            <SmallFrameSignUp />
           </SignUpModal>
         )}
       </LoginBox>
@@ -146,7 +151,7 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  position: relat;
+  position: relative;
 `;
 
 const LogoBox = styled.div`
@@ -154,6 +159,34 @@ const LogoBox = styled.div`
   width: 400px;
   height: 50%;
 `;
+
+const bounceAnimationMy = keyframes`
+  0%, 100% {
+    transform: rotate(-10deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-10deg) translateY(-15px);
+  }
+`;
+
+const bounceAnimationInside = keyframes`
+  0%, 100% {
+    transform: rotate(15deg) translateY(0);
+  }
+  50% {
+    transform: rotate(15deg) translateY(-15px);
+  }
+`;
+
+const bounceAnimationOut = keyframes`
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  50% {
+    transform: rotate(0deg) translateY(-15px);
+  }
+`;
+
 const My = styled.div`
   position: absolute;
   top: -10px;
@@ -162,6 +195,8 @@ const My = styled.div`
   color: #fff;
   font-size: 120px;
   font-weight: bold;
+  animation: ${bounceAnimationMy} 1.5s ease-in-out infinite;
+  animation-delay: 0s;
 `;
 
 const Inside = styled.div`
@@ -172,6 +207,8 @@ const Inside = styled.div`
   color: #fff;
   font-size: 120px;
   font-weight: bold;
+  animation: ${bounceAnimationInside} 1.5s ease-in-out infinite;
+  animation-delay: 0.2s; /* 딜레이 추가 */
 `;
 
 const Out = styled.div`
@@ -182,6 +219,8 @@ const Out = styled.div`
   color: #fff;
   font-size: 120px;
   font-weight: bold;
+  animation: ${bounceAnimationOut} 1.5s ease-in-out infinite;
+  animation-delay: 0.4s; /* 딜레이 추가 */
 `;
 
 const LoginBox = styled.div`
@@ -274,10 +313,21 @@ const LoginButton = styled.button`
   font-weight: 400;
   line-height: normal;
   border: 2px solid #564997;
-  background-color: #fff; /* 입력 필드 배경색 */s
-  margin-top : 100px;
-    border: 2px solid ${(props) => (props.isModalOpen ? "#fff" : "#564997")};
+  background-color: #fff; /* 입력 필드 배경색 */
+  border: 2px solid ${(props) => (props.isModalOpen ? "#fff" : "#564997")};
   background-color: ${(props) => props.bgColor || "#fff"}; /* 기본값 #fff */
+  transition: transform 0.3s ease;
+  outline: none;
+  box-shadow: none;
+
+  &:hover {
+    transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */
+    z-index: 3;
+  }
+
+  &:active {
+    transform: scale(0.95); /* 버튼 클릭 시 크기를 0.95배 감소 */
+  }
 `;
 
 const SmallFrame = styled.div`
@@ -289,7 +339,7 @@ const SmallFrame = styled.div`
 
   background: #564997;
 `;
-const SmallFrameSingUp = styled.div`
+const SmallFrameSignUp = styled.div`
   width: 1%;
   height: 10%;
   position: absolute;
@@ -325,6 +375,18 @@ const SignUp = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 0.3s ease;
+  outline: none;
+  box-shadow: none;
+
+  &:hover {
+    transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */
+    z-index: 3;
+  }
+
+  &:active {
+    transform: scale(0.95); /* 버튼 클릭 시 크기를 0.95배 감소 */
+  }
 `;
 const SignUpModal = styled.div`
   display: flex;
@@ -343,6 +405,14 @@ const SignUpModal = styled.div`
   font-size: 40px;
   font-weight: 400;
   z-index: 1;
+  animation: ${(props) =>
+    props.isClosing
+      ? css`
+          ${modalCloseAnimation} 0.5s forwards
+        `
+      : css`
+          ${modalOpenAnimation} 0.5s forwards
+        `};
 `;
 const SignUpModalCloseButton = styled.button`
   position: absolute;
@@ -360,4 +430,36 @@ const SignUpModalCloseButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+// 모달 열릴 때 애니메이션
+const modalOpenAnimation = keyframes`
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+// 모달 닫힐 때 애니메이션
+const modalCloseAnimation = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
 `;

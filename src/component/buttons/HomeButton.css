@@ -35,7 +35,6 @@
 }
 
 .home-button-img:hover {
-  transform: scale(1.1);
   transition: transform 0.3s ease;
   border-radius: 30px;
   transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */

@@ -36,4 +36,12 @@
 
 .home-button-img:hover {
   transform: scale(1.1);
+  transition: transform 0.3s ease;
+  border-radius: 30px;
+  transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */
+  z-index: 3;
+}
+
+.home-button-img:active {
+  transform: scale(0.95); /* 버튼 클릭 시 크기를 0.95배 감소 */
 }

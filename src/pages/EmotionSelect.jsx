@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../component/emotionselect/TextFrame";
 import BackLight from "../component/emotionselect/BackLight";
 import Joy from "../assets/emotionselect/Joy.png";
@@ -9,6 +9,8 @@ import Fear from "../assets/emotionselect/Fear.png";
 import Disgust from "../assets/emotionselect/Disgust.png";
 import Embarrassment from "../assets/emotionselect/Embarrassment.png";
 import Anxiety from "../assets/emotionselect/Anxiety.png";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 // 전체 화면의 배경 컨테이너 스타일 정의
 const BackgroundContainer = styled.div`
@@ -169,6 +171,10 @@ const handleButtonClick = () => {
 
 // 메인 컴포넌트
 const EmotionSelect = () => {
+  const location = useLocation();
+  const { user_id } = location.state || {};
+  const navigate = useNavigate();
+
   const [activeBacklight, setActiveBacklight] = useState({
     joy: false,
     sadness: false,
@@ -178,8 +184,34 @@ const EmotionSelect = () => {
     embarrassment: false,
     anxiety: false,
   });
-
   const [warning, setWarning] = useState(false); // 경고 메시지 상태
+
+  const [emotionSummaries, setEmotionSummaries] = useState({});
+
+  useEffect(() => {
+    const fetchEmotionSummaries = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/emotions/${user_id}`
+        );
+
+        if (response.status === 200) {
+          const cleanedString = response.data.slice(1, -1).replace(/'/g, '"');
+          const parsedData = JSON.parse(cleanedString); // JSON 파싱
+          setEmotionSummaries(parsedData); // 데이터 저장
+          console.log("데이터 로드 성공:", parsedData); // 받아온 데이터 확인
+        } else {
+          console.error("API 응답 상태 코드가 200이 아닙니다.");
+        }
+      } catch (error) {
+        console.error("GET 요청 오류:", error);
+      }
+    };
+
+    if (user_id) {
+      fetchEmotionSummaries();
+    }
+  }, [user_id]);
 
   const toggleBackLight = (emotion) => {
     const activeCount = Object.values(activeBacklight).filter(Boolean).length;
@@ -206,16 +238,73 @@ const EmotionSelect = () => {
     }
   };
 
-  const handleNextClick = () => {
-    const activeCount = Object.values(activeBacklight).filter(Boolean).length;
+  const handleNextClick = async () => {
+    const emotionKeyMap = {
+      joy: "기쁨이",
+      sadness: "슬픔이",
+      anger: "버럭이",
+      fear: "소심이",
+      disgust: "까칠이",
+      embarrassment: "당황이",
+      anxiety: "불안이",
+    };
 
-    if (activeCount < 3) {
-      setWarning(true); // 3가지 감정을 선택하지   않았을 경우 경고 메시지 표시
+    const selectedEmotions = Object.keys(activeBacklight).filter(
+      (emotion) => activeBacklight[emotion]
+    );
+
+    if (selectedEmotions.length < 3) {
+      setWarning(true);
       return;
     }
 
-    console.log("대화 시작! 선택된 감정:", activeBacklight);
-    // 다음 동작 수행
+    const emotionIds = selectedEmotions.map(
+      (emotion) =>
+        Object.keys(emotionSummaries).indexOf(emotionKeyMap[emotion]) + 1
+    );
+
+    const requestBody = {
+      emotion_ids: emotionIds, // chatroom_id는 백엔드에서 생성
+    };
+
+    console.log("Request Body:", JSON.stringify(requestBody, null, 2));
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/chatrooms/20`, // user_id를 20으로 설정
+        requestBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.chatroom_id) {
+        console.log("채팅방 생성 성공:", response.data);
+
+        navigate("/ChatRoom", {
+          state: {
+            user_id: 20, // user_id 고정
+            chatroom_id: response.data.chatroom_id,
+            emotion_choose_ids: response.data.emotion_choose_ids,
+          },
+        });
+      } else {
+        alert("채팅방 생성에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("채팅방 생성 중 오류 발생:", error);
+
+      if (error.response) {
+        console.log(
+          "백엔드 응답 데이터:",
+          JSON.stringify(error.response.data, null, 2)
+        );
+      }
+
+      alert("오류가 발생했습니다. 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -241,8 +330,9 @@ const EmotionSelect = () => {
               zIndex: 5,
             }}
           />
+
           <ButtonStyled
-            text="기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이"
+            text={emotionSummaries["기쁨이"] || "기쁨"}
             onClick={handleButtonClick}
             backgroundcolor="#FFF6AB"
           />
@@ -265,7 +355,7 @@ const EmotionSelect = () => {
             }}
           />
           <ButtonStyled
-            text="슬픔이"
+            text={emotionSummaries["슬픔이"] || "슬픔"}
             onClick={handleButtonClick}
             backgroundcolor="#C6E6FE"
           />
@@ -288,7 +378,7 @@ const EmotionSelect = () => {
             }}
           />
           <ButtonStyled
-            text="이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이"
+            text={emotionSummaries["버럭이"] || "버럭"}
             onClick={handleButtonClick}
             backgroundcolor="#FFBDBB"
           />
@@ -311,7 +401,7 @@ const EmotionSelect = () => {
             }}
           />
           <ButtonStyled
-            text="소심이"
+            text={emotionSummaries["소심이"] || "소심"}
             onClick={handleButtonClick}
             backgroundcolor="#D1B2FF"
           />
@@ -334,7 +424,7 @@ const EmotionSelect = () => {
             }}
           />
           <ButtonStyled
-            text="까칠이"
+            text={emotionSummaries["까칠이"] || "까칠"}
             onClick={handleButtonClick}
             backgroundcolor="#D1FFE2"
           />
@@ -357,7 +447,7 @@ const EmotionSelect = () => {
             }}
           />
           <ButtonStyled
-            text="기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이기쁨이"
+            text={emotionSummaries["당황이"] || "당황"}
             onClick={handleButtonClick}
             backgroundcolor="#FFB4CB"
           />
@@ -380,7 +470,7 @@ const EmotionSelect = () => {
             }}
           />
           <ButtonStyled
-            text="불안이"
+            text={emotionSummaries["불안이"] || "불안"}
             onClick={handleButtonClick}
             backgroundcolor="#FCBE84"
           />

@@ -34,16 +34,17 @@ const BoxButton = styled.button`
   justify-content: center;
   cursor: pointer;
 
-  .icon {
-    display: block;
-    width: 100%;
-    height: auto;
+  transition: transform 0.3s ease;
+  outline: none;
+  box-shadow: none;
+
+  &:hover {
+    transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */
+    z-index: 3;
   }
 
-  /* 호버 상태에서도 아무 변화 없음 */
-  &:hover .icon {
-    transform: none;
-    filter: none;
+  &:active {
+    transform: scale(0.95); /* 버튼 클릭 시 크기를 0.95배 감소 */
   }
 `;
 

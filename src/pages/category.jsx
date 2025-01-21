@@ -12,6 +12,7 @@ import StaticFriends from "../assets/category/StaticFriends.png";
 import StaticCompany from "../assets/category/StaticCompany.png";
 import StaticLove from "../assets/category/StaticLove.png";
 
+// 배경 컨테이너
 const BackgroundContainer = styled.div`
   position: fixed;
   top: 0;
@@ -23,6 +24,7 @@ const BackgroundContainer = styled.div`
   background-size: cover;
 `;
 
+// 컨텐츠 컨테이너
 const ContentContainer = styled.div`
   position: relative;
   display: flex;
@@ -35,6 +37,7 @@ const ContentContainer = styled.div`
   box-sizing: border-box;
 `;
 
+// 카테고리 컨테이너
 const CategoryContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,6 +46,7 @@ const CategoryContainer = styled.div`
   margin: -8% 0 8%;
 `;
 
+// 카테고리 제목 스타일
 const CategoryTitle = styled.div`
   color: #fff;
   text-align: center;
@@ -51,6 +55,7 @@ const CategoryTitle = styled.div`
   line-height: 160%;
 `;
 
+// 카테고리 이미지 프레임 컨테이너
 const CategoryImageFrameContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -66,11 +71,11 @@ const CustomComponent = () => {
   const { user_id } = location.state || {};
 
   const handleCategoryClick = (category) => () => {
-    navigate("/preparation", { state: { user_id, category } }); // 다음 페이지로 이동
+    navigate("/preparation", { state: { user_id, category } });
   };
 
   const handleReportClick = () => {
-    navigate("/reportlist", { state: { user_id} }); // 다음 페이지로 이동
+    navigate("/reportlist", { state: { user_id } });
   };
 
   return (

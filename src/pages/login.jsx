@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// 로그인 컴포넌트
 const Login = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalClosing, setIsModalClosing] = useState(false);
@@ -11,11 +12,13 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // 모달 열기
   const handleModalOpen = () => {
     setIsModalOpen(true);
     setIsModalClosing(false);
   };
 
+  // 모달 닫기
   const handleModalClose = () => {
     setIsModalClosing(true);
     setTimeout(() => {
@@ -34,11 +37,11 @@ const Login = () => {
         }
       );
 
-      if (response.status === 201 || response.status === 200) {
+      if (response.status === 200) {
         alert("회원가입 성공!");
         setNickname("");
         setPassword("");
-        handleModalClose(); // 회원가입 성공 시 모달 닫기
+        handleModalClose();
       } else {
         alert("회원가입 실패!");
       }
@@ -59,9 +62,9 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        const { user_id } = response.data; // 응답 데이터에서 ID 추출
+        const { user_id } = response.data;
         alert("로그인 성공!");
-        navigate("/category", { state: { user_id } }); // 다음 페이지로 이동
+        navigate("/category", { state: { user_id } });
       } else {
         alert("로그인 실패!");
       }
@@ -138,6 +141,7 @@ const Login = () => {
 
 export default Login;
 
+// 배경 및 전체 레이아웃 설정
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -154,12 +158,14 @@ const Container = styled.div`
   position: relative;
 `;
 
+// 로고 박스
 const LogoBox = styled.div`
-  position: relative; /* 내부 요소의 기준 컨테이너 */
+  position: relative;
   width: 400px;
   height: 50%;
 `;
 
+// 바운스 애니메이션
 const bounceAnimationMy = keyframes`
   0%, 100% {
     transform: rotate(-10deg) translateY(0);
@@ -187,6 +193,7 @@ const bounceAnimationOut = keyframes`
   }
 `;
 
+// 로고 텍스트
 const My = styled.div`
   position: absolute;
   top: -10px;
@@ -208,7 +215,7 @@ const Inside = styled.div`
   font-size: 120px;
   font-weight: bold;
   animation: ${bounceAnimationInside} 1.5s ease-in-out infinite;
-  animation-delay: 0.2s; /* 딜레이 추가 */
+  animation-delay: 0.2s;
 `;
 
 const Out = styled.div`
@@ -220,9 +227,10 @@ const Out = styled.div`
   font-size: 120px;
   font-weight: bold;
   animation: ${bounceAnimationOut} 1.5s ease-in-out infinite;
-  animation-delay: 0.4s; /* 딜레이 추가 */
+  animation-delay: 0.4s;
 `;
 
+// 로그인 박스
 const LoginBox = styled.div`
   display: flex;
   width: 470px;
@@ -256,6 +264,7 @@ const SignUpLogo = styled.div`
   line-height: normal;
 `;
 
+// 입력 필드
 const UserNameInput = styled.input`
   display: flex;
   width: 100%;
@@ -263,7 +272,7 @@ const UserNameInput = styled.input`
   flex-direction: column;
   justify-content: center;
   color: #000;
-  background-color: ${(props) => props.bgColor || "#fff"}; /* 기본값 #fff */
+  background-color: ${(props) => props.bgColor || "#fff"};
   font-size: 35px;
   font-family: "IntensaFuente", sans-serif;
   font-weight: 400;
@@ -274,7 +283,7 @@ const UserNameInput = styled.input`
 
   &::placeholder {
     font-size: 35px;
-    font-weight: 300; /* 가벼운 글꼴 */
+    font-weight: 300;
     font-family: "Intensa Fuente";
   }
 `;
@@ -286,7 +295,7 @@ const PasswordInput = styled.input`
   flex-direction: column;
   justify-content: center;
   color: #000;
-  background-color: ${(props) => props.bgColor || "#fff"}; /* 기본값 #fff */
+  background-color: ${(props) => props.bgColor || "#fff"};
   font-size: 35px;
   font-style: normal;
   font-weight: 400;
@@ -297,11 +306,12 @@ const PasswordInput = styled.input`
 
   &::placeholder {
     font-size: 35px;
-    font-weight: 300; /* 가벼운 글꼴 */
+    font-weight: 300;
     font-family: "Intensa Fuente";
   }
 `;
 
+// 로그인 버튼
 const LoginButton = styled.button`
   width: 35%;
   padding: 2%;
@@ -313,20 +323,20 @@ const LoginButton = styled.button`
   font-weight: 400;
   line-height: normal;
   border: 2px solid #564997;
-  background-color: #fff; /* 입력 필드 배경색 */
+  background-color: #fff;
   border: 2px solid ${(props) => (props.isModalOpen ? "#fff" : "#564997")};
-  background-color: ${(props) => props.bgColor || "#fff"}; /* 기본값 #fff */
+  background-color: ${(props) => props.bgColor || "#fff"};
   transition: transform 0.3s ease;
   outline: none;
   box-shadow: none;
 
   &:hover {
-    transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */
+    transform: scale(1.05);
     z-index: 3;
   }
 
   &:active {
-    transform: scale(0.95); /* 버튼 클릭 시 크기를 0.95배 감소 */
+    transform: scale(0.95);
   }
 `;
 
@@ -358,6 +368,7 @@ const MiddleFrame = styled.div`
   background: rgba(255, 255, 255, 0.6);
 `;
 
+// 회원가입 버튼
 const SignUp = styled.button`
   width: 22%;
   height: 25%;
@@ -380,14 +391,16 @@ const SignUp = styled.button`
   box-shadow: none;
 
   &:hover {
-    transform: scale(1.05); /* 버튼에 호버하면 크기를 1.05배 증가 */
+    transform: scale(1.05);
     z-index: 3;
   }
 
   &:active {
-    transform: scale(0.95); /* 버튼 클릭 시 크기를 0.95배 감소 */
+    transform: scale(0.95);
   }
 `;
+
+// 회원가입 모달
 const SignUpModal = styled.div`
   display: flex;
   position: absolute;

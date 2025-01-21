@@ -7,6 +7,9 @@ import AngerPNG from "../assets/chatroom/Anger.png";
 import JoyPNG from "../assets/chatroom/Joy.png";
 import SadnessPNG from "../assets/chatroom/Sadness.png";
 import EmbarrassmentPNG from "../assets/chatroom/Embarrassment.png";
+import Mute from "../assets/Mute.png";
+import Volume from "../assets/Volume.png";
+import PropTypes from "prop-types";
 
 const BackgroundContainer = styled.div`
   width: 100vw;
@@ -17,7 +20,7 @@ const BackgroundContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   overflow: hidden;
   padding: 5rem 11rem; /*위아래, 양쪽*/
 `;
@@ -47,9 +50,9 @@ const CharacterContainer = styled.div`
   }
 `;
 
-const ChatroomContaninerWrapper =styled.div`
+const ChatroomContaninerWrapper = styled.div`
   width: 47.5%; /* 오른쪽 영역 너비 */
-  height:105%;
+  height: 105%;
   display: flex; /* 플렉스 박스를 사용하여 정렬 */
   flex-direction: column; /* 세로 방향으로 정렬 */
   align-items: center; /* 가로 가운데 정렬 */
@@ -64,7 +67,7 @@ const SecondWrapper = styled.div`
   background-color: #ffffffba;
   display: flex;
   flex-direction: column;
-  margin-bottom:0.6rem;
+  margin-bottom: 0.6rem;
 `;
 
 const ChatContainerWrapper = styled.div`
@@ -74,7 +77,7 @@ const ChatContainerWrapper = styled.div`
   align-items: center; /* 가로 정렬 */
   height: 100%; /* 부모 컨테이너의 높이를 채웁니다 */
   width: 100%;
-  `;
+`;
 
 const ModeSelectWrapper = styled.div`
   position: absolute;
@@ -135,7 +138,6 @@ const ChatContainer = styled.div`
   display: flex;
   flex-direction: column-reverse;
   padding: 3% 5%;
-
 `;
 
 const Message = styled.div`
@@ -160,7 +162,7 @@ const InputContainer = styled.div`
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 8px;
-  margin-top:1rem;
+  margin-top: 1rem;
 `;
 
 const TextInput = styled.input`
@@ -183,7 +185,7 @@ const ChatFinishButton = styled.button`
   transition: transform 0.3s ease;
   border: none;
   outline: none;
-  
+
   &:hover {
     transform: scale(1.05);
   }
@@ -208,11 +210,44 @@ const SvgSendButton = styled.svg`
   }
 `;
 
-const ChatRoom = () => {
+const VolumeControl = styled.div`
+  position: fixed;
+  bottom: 20px;
+  right: 1300px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding-right: 10px;
+`;
+
+const MuteButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const VolumeSlider = styled.input`
+  width: 100px;
+  cursor: pointer;
+`;
+
+const Icon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
+const ChatRoom = ({ audioRef }) => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
 
   const chatContainerRef = useRef(null);
 
@@ -261,6 +296,23 @@ const ChatRoom = () => {
     });
   };
 
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+  };
+
+  // 볼륨 조절 핸들러
+  const handleVolumeChange = (e) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+      setIsMuted(newVolume === 0); // 볼륨이 0일 때 음소거 상태로 설정
+    }
+  };
+
   return (
     <BackgroundContainer>
       <CharacterContainerWrapper>
@@ -283,39 +335,39 @@ const ChatRoom = () => {
         </ChatFinishButton>
       </CharacterContainerWrapper>
       <ChatroomContaninerWrapper>
-      <SecondWrapper>
-      <ModeSelectWrapper $isActive={isActive} onClick={handleToggle}>
-          <ToggleSVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 36">
-            <rect
-              x="1"
-              y="1"
-              width="66"
-              height="34"
-              rx="17"
-              fill="white"
-              stroke="black"
-              strokeWidth="2"
-            />
-            <ToggleCircle
-              cx={isActive ? "50" : "17.75"}
-              cy="18"
-              r="9.75"
-              fill="black"
-            />
-          </ToggleSVG>
-          <ToggleText>{isActive ? "일반 모드" : "논쟁 모드"}</ToggleText>
-        </ModeSelectWrapper>
-      <ChatContainerWrapper>
-        <ChatContainer ref={chatContainerRef}>
-          {messages.map((message, index) => (
-            <Message key={index} $isUser={message.isUser}>
-              {message.text}
-            </Message>
-          ))}
-        </ChatContainer>
-      </ChatContainerWrapper>
-      </SecondWrapper>
-      <InputContainer>
+        <SecondWrapper>
+          <ModeSelectWrapper $isActive={isActive} onClick={handleToggle}>
+            <ToggleSVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 36">
+              <rect
+                x="1"
+                y="1"
+                width="66"
+                height="34"
+                rx="17"
+                fill="white"
+                stroke="black"
+                strokeWidth="2"
+              />
+              <ToggleCircle
+                cx={isActive ? "50" : "17.75"}
+                cy="18"
+                r="9.75"
+                fill="black"
+              />
+            </ToggleSVG>
+            <ToggleText>{isActive ? "일반 모드" : "논쟁 모드"}</ToggleText>
+          </ModeSelectWrapper>
+          <ChatContainerWrapper>
+            <ChatContainer ref={chatContainerRef}>
+              {messages.map((message, index) => (
+                <Message key={index} $isUser={message.isUser}>
+                  {message.text}
+                </Message>
+              ))}
+            </ChatContainer>
+          </ChatContainerWrapper>
+        </SecondWrapper>
+        <InputContainer>
           <TextInput
             type="text"
             placeholder="메시지를 입력해주세요."
@@ -346,7 +398,25 @@ const ChatRoom = () => {
             />
           </SvgSendButton>
         </InputContainer>
-        </ChatroomContaninerWrapper>
+      </ChatroomContaninerWrapper>
+
+      <VolumeControl>
+        <MuteButton onClick={toggleMute}>
+          {isMuted ? (
+            <Icon src={Mute} alt="Mute" />
+          ) : (
+            <Icon src={Volume} alt="Volume" />
+          )}
+        </MuteButton>
+        <VolumeSlider
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={isMuted ? 0 : volume}
+          onChange={handleVolumeChange}
+        />
+      </VolumeControl>
       {isModalOpen && (
         <Modal onConfirm={handleModalConfirm} onCancel={handleModalCancel} />
       )}
@@ -354,4 +424,9 @@ const ChatRoom = () => {
   );
 };
 
+ChatRoom.propTypes = {
+  audioRef: PropTypes.shape({
+    current: PropTypes.instanceOf(Element),
+  }).isRequired,
+};
 export default ChatRoom;

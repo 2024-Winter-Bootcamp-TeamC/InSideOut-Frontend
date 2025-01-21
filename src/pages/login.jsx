@@ -3,6 +3,7 @@ import BackGroundPNG from "../assets/login.jpg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import StarrySky from "../component/StarrySky";
 
 // 로그인 컴포넌트
 const Login = () => {
@@ -75,6 +76,7 @@ const Login = () => {
 
   return (
     <Container>
+      <StarrySky />
       <LogoBox>
         <My>My</My>
         <Inside>Inside</Inside>

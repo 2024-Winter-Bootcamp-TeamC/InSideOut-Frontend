@@ -11,6 +11,7 @@ import StaticFamily from "../assets/category/StaticFamily.png";
 import StaticFriends from "../assets/category/StaticFriends.png";
 import StaticCompany from "../assets/category/StaticCompany.png";
 import StaticLove from "../assets/category/StaticLove.png";
+import StarrySky from "../component/StarrySky";
 
 // 배경 컨테이너
 const BackgroundContainer = styled.div`
@@ -80,6 +81,7 @@ const CustomComponent = () => {
 
   return (
     <BackgroundContainer>
+      <StarrySky />
       <ContentContainer>
         <CategoryContainer>
           <CategoryTitle>CATEGORIES</CategoryTitle>

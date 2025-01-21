@@ -8,7 +8,7 @@ import ReportList from "./pages/ReportList";
 import Preparation from "./pages/preparation";
 import EmotionSelect from "./pages/EmotionSelect";
 import { useEffect, useRef } from "react";
-import BGM from "./assets/BackGroundBGM.mp3";
+import BGM from "./assets/BackGroundBGM1.mp3";
 
 function App() {
   const audioRef = useRef(null);

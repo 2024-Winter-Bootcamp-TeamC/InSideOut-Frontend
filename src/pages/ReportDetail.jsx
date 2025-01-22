@@ -7,8 +7,7 @@ import 까칠이 from "../assets/까칠이.png";
 import 당황이 from "../assets/당황이.png";
 import 소심이 from "../assets/소심이.png";
 import 불안이 from "../assets/불안이.png";
-import HomeButton from "../component/buttons/HomeButton.jsx";
-import HomeButtonGIF from "../assets/HomeButton.svg";
+import ReportButton from "../component/buttons/ReportButton.jsx";
 import { useRef, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -70,7 +69,7 @@ const ReportDetail = () => {
 
   const handleHomeButtonClick = () => {
     console.log("홈 버튼 클릭");
-    navigate("/category", { state: { user_id } });
+    navigate("/reportlist", { state: { user_id } });
     // 홈 버튼 클릭 시 동작 추가
   };
 
@@ -198,7 +197,7 @@ const ReportDetail = () => {
         </EmotionContainer>
       </ReportDetailContainer>
       <div style={{ position: "absolute", left: "20px", bottom: "20px" }}>
-        <HomeButton gifPath={HomeButtonGIF} onClick={handleHomeButtonClick} />
+        <ReportButton onClick={handleHomeButtonClick} />
       </div>
     </Container>
   );

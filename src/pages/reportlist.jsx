@@ -55,7 +55,7 @@ const HeaderContainer = styled.div`
 // 구슬 컨테이너
 const SliderContainer = styled.div`
   position: relative;
-  width: 80%;
+  width: 100%;
   height: 100%;
   padding: 0 100px;
   overflow: hidden; /* 넘치는 콘텐츠 숨김 */

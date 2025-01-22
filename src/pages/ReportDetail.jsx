@@ -9,7 +9,9 @@ import 소심이 from "../assets/소심이.png";
 import 불안이 from "../assets/불안이.png";
 import HomeButton from "../component/buttons/HomeButton.jsx";
 import HomeButtonGIF from "../assets/HomeButton.svg";
-
+import { useRef, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 import {
   Chart,
   PieController,
@@ -18,7 +20,7 @@ import {
   Legend,
   Title,
 } from "chart.js";
-import { useRef, useEffect } from "react";
+
 const emotionMap = {
   기쁨이: {
     image: 기쁨이,
@@ -56,135 +58,148 @@ const emotionMap = {
     summaryColor: "#F69F1E",
   },
 };
-const smulData = {
-  id: 1,
-  title: "2025-01-15",
-  smultext:
-    "상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요약상약황요아아아아아아아아아아",
-  emotion: {
-    버럭이:
-      "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다아아아아아아아제안했다아아아아아아.",
-    까칠이:
-      "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다.",
-    슬픔이:
-      "친구의 갑작스러운 행동에 대해 깊은 공감을 표현하며, 오랜 우정이 이렇게 끝나버린 것 같아 슬프다는 감정을 드러냈다. 또한, 친구가 한 번쯤은 이유를 설명해줬다면 좋았을 텐데라는 아쉬움을 표현하면서도, 기다리면서 천천히 다가가 보는 것이 좋겠다는 조심스러운 접근을 제안했다.",
-  },
-  wording: {
-    버럭이: "좋아요",
-  },
-  per: {
-    기쁨: 30.5,
-    슬픔: 19.5,
-    버럭: 8.5,
-    까칠: 11.5,
-    소심: 0,
-    불안: 15.5,
-    당황: 14.5,
-  },
-};
+
 Chart.register(PieController, ArcElement, Title, Tooltip, Legend);
 const ReportDetail = () => {
+  const location = useLocation();
+  const { report_id, user_id } = location.state || {};
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
-  const handleHomeButtonClick = () => {};
+  const [reportdetail, setReportDetail] = useState(null);
+  const navigate = useNavigate();
+
+  const handleHomeButtonClick = () => {
+    console.log("홈 버튼 클릭");
+    navigate("/category", { state: { user_id } });
+    // 홈 버튼 클릭 시 동작 추가
+  };
+
   useEffect(() => {
-    const canvas = chartRef.current;
+    const fetchReportDetail = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/reports/view/${report_id}`
+        );
+        console.log(response.data);
+        if (response.status === 200) {
+          setReportDetail(response.data);
+        } else {
+          console.error("API 응답 상태 코드가 200이 아닙니다.");
+        }
+      } catch (error) {
+        console.error("GET 요청 오류:", error);
+      }
+    };
+
+    if (report_id) {
+      fetchReportDetail();
+    }
+  }, [report_id]);
+
+  useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-    chartInstance.current = new Chart(canvas, {
-      type: "pie",
-      data: {
-        labels: ["기쁨", "슬픔", "버럭", "까칠", "당황", "소심", "불안"],
-        datasets: [
-          {
-            label: "감정 비율",
-            data: [
-              smulData.per.기쁨,
-              smulData.per.슬픔,
-              smulData.per.버럭,
-              smulData.per.까칠,
-              smulData.per.소심,
-              smulData.per.불안,
-              smulData.per.당황,
-            ],
-            backgroundColor: [
-              "#FFC738",
-              "#183B89",
-              "#FF3529",
-              "#106B1A",
-              "#CD3364",
-              "#5B3597",
-              "#DF7416",
-            ],
-            hoverOffset: 20,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
 
-        plugins: {
-          legend: {
-            position: "bottom", // 범례 위치 설정
-            labels: {
-              color: "#000", // 범례 라벨 텍스트 색상
+    if (reportdetail) {
+      const canvas = chartRef.current;
+      chartInstance.current = new Chart(canvas, {
+        type: "pie",
+        data: {
+          labels: [
+            "기쁨이",
+            "슬픔이",
+            "버럭이",
+            "까칠이",
+            "소심이",
+            "불안이",
+            "당황이",
+          ],
+          datasets: [
+            {
+              label: "감정 비율",
+              data: Object.values(reportdetail.emotion_percentage),
+              backgroundColor: [
+                "#FFC738",
+                "#183B89",
+                "#FF3529",
+                "#106B1A",
+                "#CD3364",
+                "#5B3597",
+                "#DF7416",
+              ],
+              hoverOffset: 20,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                color: "#000",
+                font: {
+                  size: 14,
+                  family: "BM HANNA Pro",
+                  weight: "bold",
+                },
+              },
+            },
+            title: {
+              display: true,
+              text: "사용자 감정 비율",
+              color: "#000",
               font: {
-                size: 14, // 라벨 폰트 크기
-                family: "BM HANNA Pro", // 라벨 폰트 종류
-                weight: "bold", // 라벨 폰트 굵기
+                size: 25,
+                weight: "bold",
+                family: "BM HANNA Pro",
               },
             },
           },
-          title: {
-            display: true,
-            text: "사용자 감정 비율", // 제목
-            color: "#000", // 제목 색상
-            font: {
-              size: 25, // 제목 폰트 크기
-              weight: "bold", // 제목 폰트 굵기
-              family: "BM HANNA Pro", // 제목 폰트 종류
-            },
-          },
         },
-      },
-    });
-  }, []);
+      });
+    }
+  }, [reportdetail]);
+
   return (
     <Container>
       <ReportDetailContainer>
-        <TitleText>{smulData.title}</TitleText>
+        <TitleText>{reportdetail?.title || "제목 없음"}</TitleText>
         <SimulationContainer>
           <SimulationText>상황요약</SimulationText>
-          <SmulText>{smulData.smultext}</SmulText>
+          <SmulText>{reportdetail?.situation_summary || "내용 없음"}</SmulText>
           <StyledCanvas ref={chartRef} />
         </SimulationContainer>
         <EmotionContainer>
-          {Object.keys(smulData.emotion).map((key) => (
-            <EmotionSmallContainer key={key}>
-              <EmotionImage src={emotionMap[key].image} alt={key} />
-
-              <EmotionName color={emotionMap[key].titleColor}>
-                {key}
-              </EmotionName>
-              <EmotionSummary color={emotionMap[key].summaryColor}>
-                {smulData.emotion[key]}
-              </EmotionSummary>
-            </EmotionSmallContainer>
-          ))}
-          <WordingContainer>
-            {Object.keys(smulData.wording).map((key) => (
-              <WordingSpearker key={key} color={emotionMap[key].titleColor}>
-                {key}의 한마디
-                <br />
-                <br />
-                {smulData.wording[key]}
-              </WordingSpearker>
+          {reportdetail &&
+            Object.keys(reportdetail.emotion_summary || {}).map((key) => (
+              <EmotionSmallContainer key={key}>
+                <EmotionImage src={emotionMap[key]?.image} alt={key} />
+                <EmotionName color={emotionMap[key]?.titleColor}>
+                  {key}
+                </EmotionName>
+                <EmotionSummary color={emotionMap[key]?.summaryColor}>
+                  {reportdetail.emotion_summary[key]}
+                </EmotionSummary>
+              </EmotionSmallContainer>
             ))}
+          <WordingContainer>
+            {reportdetail &&
+              Object.keys(reportdetail.wording || {}).map((key) => (
+                <WordingSpearker key={key} color={emotionMap[key]?.titleColor}>
+                  {key}의 한마디
+                  <br />
+                  <br />
+                  {reportdetail.wording[key]}
+                </WordingSpearker>
+              ))}
           </WordingContainer>
         </EmotionContainer>
       </ReportDetailContainer>
-      <HomeButton gifPath={HomeButtonGIF} onClick={handleHomeButtonClick} />
+      <div style={{ position: "absolute", left: "20px", bottom: "20px" }}>
+        <HomeButton gifPath={HomeButtonGIF} onClick={handleHomeButtonClick} />
+      </div>
     </Container>
   );
 };

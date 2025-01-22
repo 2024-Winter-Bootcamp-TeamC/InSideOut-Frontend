@@ -311,6 +311,10 @@ const ReportList = () => {
     navigate("/category", { state: { user_id } });
     // 홈 버튼 클릭 시 동작 추가
   };
+  const handleReportButtonClick = (report_id) => {
+    navigate("/reportdetail", { state: { report_id, user_id } });
+    // 홈 버튼 클릭 시 동작 추가
+  };
 
   return (
     <BackGroundContainer>
@@ -330,8 +334,18 @@ const ReportList = () => {
         {/* 슬라이더 아이템들 */}
         <SliderWrapper translate={calculateTranslate()}>
           {filteredReports.map((report, index) => (
-            <SlideItemContainer key={report.report_id}>
-              {index == currentIndex && (
+            <SlideItemContainer
+              key={report.report_id}
+              onClick={
+                index === currentIndex
+                  ? () => handleReportButtonClick(report.report_id)
+                  : null
+              }
+              style={{
+                cursor: index === currentIndex ? "pointer" : "default",
+              }}
+            >
+              {index === currentIndex && (
                 <DateOverlay>{report.title}</DateOverlay>
               )}
               <SlideItem
@@ -339,8 +353,7 @@ const ReportList = () => {
                 index={index}
                 currentIndex={currentIndex}
               />
-              <LightEffect index={index} currentIndex={currentIndex} />{" "}
-              {/* 구슬 밑에 빛 추가 */}
+              <LightEffect index={index} currentIndex={currentIndex} />
             </SlideItemContainer>
           ))}
         </SliderWrapper>

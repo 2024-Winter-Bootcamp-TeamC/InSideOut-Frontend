@@ -1,4 +1,15 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const pulseAnimation = keyframes`
+  0%, 100% {
+    opacity: 0.8; /* 기본 투명도 */
+    filter: blur(21px) brightness(1);
+  }
+  50% {
+    opacity: 1; /* 더 선명해짐 */
+    filter: blur(21px) brightness(1.3); /* 밝아짐 */
+  }
+`;
 
 const JoyBackLight = styled.div`
   display: flex;
@@ -19,6 +30,8 @@ const JoyBackLight = styled.div`
     rgba(255, 199, 56, 0.5) 100%
   );
   filter: blur(21px);
+
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 
 const AngerBackLight = styled.div`
@@ -40,6 +53,7 @@ const AngerBackLight = styled.div`
     rgba(255, 53, 41, 0.5) 100%
   );
   filter: blur(21px);
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 
 const FearBackLight = styled.div`
@@ -61,6 +75,7 @@ const FearBackLight = styled.div`
     rgba(91, 53, 151, 0.5) 100%
   );
   filter: blur(21px);
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 
 const DisgustBackLight = styled.div`
@@ -83,6 +98,7 @@ const DisgustBackLight = styled.div`
   );
 
   filter: blur(21px);
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 
 const EmbarrassmentBackLight = styled.div`
@@ -105,6 +121,7 @@ const EmbarrassmentBackLight = styled.div`
   );
 
   filter: blur(21px);
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 const AnxietyBackLight = styled.div`
   display: flex;
@@ -126,6 +143,7 @@ const AnxietyBackLight = styled.div`
   );
 
   filter: blur(21px);
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 
 const SadnessBackLight = styled.div`
@@ -148,6 +166,7 @@ const SadnessBackLight = styled.div`
   );
 
   filter: blur(21px);
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 
 const BackLight = {

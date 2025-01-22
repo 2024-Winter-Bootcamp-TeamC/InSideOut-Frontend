@@ -10,7 +10,7 @@ import 불안이 from "../assets/불안이.png";
 import HomeButton from "../component/buttons/HomeButton.jsx";
 import HomeButtonGIF from "../assets/HomeButton.svg";
 import { useRef, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   Chart,
@@ -62,11 +62,17 @@ const emotionMap = {
 Chart.register(PieController, ArcElement, Title, Tooltip, Legend);
 const ReportDetail = () => {
   const location = useLocation();
-  const { report_id } = location.state || {};
+  const { report_id, user_id } = location.state || {};
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
-  const handleHomeButtonClick = () => {};
   const [reportdetail, setReportDetail] = useState(null);
+  const navigate = useNavigate();
+
+  const handleHomeButtonClick = () => {
+    console.log("홈 버튼 클릭");
+    navigate("/category", { state: { user_id } });
+    // 홈 버튼 클릭 시 동작 추가
+  };
 
   useEffect(() => {
     const fetchReportDetail = async () => {
@@ -158,16 +164,16 @@ const ReportDetail = () => {
 
   return (
     <Container>
-      {reportdetail ? (
-        <ReportDetailContainer>
-          <TitleText>{reportdetail.title}</TitleText>
-          <SimulationContainer>
-            <SimulationText>상황요약</SimulationText>
-            <SmulText>{reportdetail.situation_summary}</SmulText>
-            <StyledCanvas ref={chartRef} />
-          </SimulationContainer>
-          <EmotionContainer>
-            {Object.keys(reportdetail.emotion_summary).map((key) => (
+      <ReportDetailContainer>
+        <TitleText>{reportdetail?.title || "제목 없음"}</TitleText>
+        <SimulationContainer>
+          <SimulationText>상황요약</SimulationText>
+          <SmulText>{reportdetail?.situation_summary || "내용 없음"}</SmulText>
+          <StyledCanvas ref={chartRef} />
+        </SimulationContainer>
+        <EmotionContainer>
+          {reportdetail &&
+            Object.keys(reportdetail.emotion_summary || {}).map((key) => (
               <EmotionSmallContainer key={key}>
                 <EmotionImage src={emotionMap[key]?.image} alt={key} />
                 <EmotionName color={emotionMap[key]?.titleColor}>
@@ -178,8 +184,9 @@ const ReportDetail = () => {
                 </EmotionSummary>
               </EmotionSmallContainer>
             ))}
-            <WordingContainer>
-              {Object.keys(reportdetail.wording || {}).map((key) => (
+          <WordingContainer>
+            {reportdetail &&
+              Object.keys(reportdetail.wording || {}).map((key) => (
                 <WordingSpearker key={key} color={emotionMap[key]?.titleColor}>
                   {key}의 한마디
                   <br />
@@ -187,13 +194,12 @@ const ReportDetail = () => {
                   {reportdetail.wording[key]}
                 </WordingSpearker>
               ))}
-            </WordingContainer>
-          </EmotionContainer>
-        </ReportDetailContainer>
-      ) : (
-        <div>로딩 중...</div>
-      )}
-      <HomeButton gifPath={HomeButtonGIF} onClick={handleHomeButtonClick} />
+          </WordingContainer>
+        </EmotionContainer>
+      </ReportDetailContainer>
+      <div style={{ position: "absolute", left: "20px", bottom: "20px" }}>
+        <HomeButton gifPath={HomeButtonGIF} onClick={handleHomeButtonClick} />
+      </div>
     </Container>
   );
 };

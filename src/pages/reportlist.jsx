@@ -312,7 +312,7 @@ const ReportList = () => {
     // 홈 버튼 클릭 시 동작 추가
   };
   const handleReportButtonClick = (report_id) => {
-    navigate("/reportdetail", { state: { report_id } });
+    navigate("/reportdetail", { state: { report_id, user_id } });
     // 홈 버튼 클릭 시 동작 추가
   };
 

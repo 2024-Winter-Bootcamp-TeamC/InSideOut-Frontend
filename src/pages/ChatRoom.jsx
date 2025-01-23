@@ -80,10 +80,7 @@ const ChatContainerWrapper = styled.div`
 `;
 
 const ModeSelectWrapper = styled.div`
-  position: absolute;
   display: flex;
-  top: 13%;
-  left: 60%;
   justify-content: center;
   align-items: center;
   background-color: ${({ $isActive }) => ($isActive ? "#4caf50" : "#f32125")};
@@ -91,11 +88,11 @@ const ModeSelectWrapper = styled.div`
   border-radius: 30px;
   padding: 5px 15px;
   cursor: pointer;
-  width: 20%;
+  width: 40%;
   height: 7%;
   justify-content: space-between;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
+  margin: 1rem auto;
   transition: transform 0.3s ease;
 
   border: none;

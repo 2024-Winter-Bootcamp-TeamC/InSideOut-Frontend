@@ -3,10 +3,15 @@ import styled, { keyframes } from "styled-components";
 
 // 배경 컨테이너 스타일
 const StarryBackground = styled.div`
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
 `;
 
 // 별의 반짝이는 애니메이션 정의

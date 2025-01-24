@@ -13,6 +13,7 @@ const StyledCard = styled.div`
   background-size: cover; /* 배경 이미지 크기 조정 */
   cursor: pointer; /* 마우스 포인터 변경 */
   transition: transform 0.3s ease; /* 크기 변환 애니메이션 */
+  z-index: 2;
 
   /* hover 시 스타일 */
   &:hover {
@@ -39,7 +40,7 @@ const HoverTextContainer = styled.div`
   background: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
   border-radius: 50px; /* 카드와 동일한 모서리 둥글기 */
   display: flex; /* 플렉스박스 레이아웃 */
-  justify-content: flex-end; /* 텍스트를 오른쪽 정렬 */
+  justify-content: center; /* 텍스트를 오른쪽 정렬 */
   align-items: center; /* 텍스트를 세로로 중앙 정렬 */
   opacity: 0; /* 초기 상태에서 투명 */
   transition: opacity 0.3s ease; /* 투명도 애니메이션 */
@@ -55,8 +56,7 @@ const HoverText = styled.div`
   color: #fff; /* 텍스트 색상 */
   font-size: 50px; /* 텍스트 크기 */
   font-weight: bold; /* 텍스트 굵기 */
-  font-family: "IntensaFuente", sans-serif; /* 폰트 */
-  margin-right: 30px; /* 오른쪽 여백 */
+  font-family: "BMHANNAPro", sans-serif; /* 폰트 */
 `;
 
 // CategoryImageFrame: 이미지와 텍스트를 포함한 카드 컴포넌트

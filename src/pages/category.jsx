@@ -37,8 +37,17 @@ const ContentContainer = styled.div`
   padding: 100px 270px;
   box-sizing: border-box;
 `;
-
-// 카테고리 컨테이너
+// 카테고리 제목 스타일
+const CategoryTitle1 = styled.div`
+  position: absolute;
+  color: #fff;
+  text-align: center;
+  font-family: "IntensaFuente", sans-serif;
+  font-size: 30px;
+  line-height: 160%;
+  font-family: "BM HANNA Pro";
+  top: 27%;
+`;
 const CategoryContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,6 +63,7 @@ const CategoryTitle = styled.div`
   font-family: "IntensaFuente", sans-serif;
   font-size: 100px;
   line-height: 160%;
+    font-family: "BM HANNA Pro";
 `;
 
 // 카테고리 이미지 프레임 컨테이너
@@ -84,32 +94,33 @@ const CustomComponent = () => {
       <StarrySky />
       <ContentContainer>
         <CategoryContainer>
-          <CategoryTitle>CATEGORIES</CategoryTitle>
+          <CategoryTitle>카테고리</CategoryTitle>
+          <CategoryTitle1>누구와 갈등이 있나요?</CategoryTitle1>
         </CategoryContainer>
         <CategoryImageFrameContainer>
           <CategoryImageFrame
             Image={StaticFamily}
             Gif={FamilyGIF}
-            HoverTextContent="FAMILY"
-            onClick={handleCategoryClick("family")}
+            HoverTextContent="가족"
+            onClick={handleCategoryClick("가족")}
           />
           <CategoryImageFrame
             Image={StaticFriends}
             Gif={FriendsGIF}
-            HoverTextContent="FRIENDS"
-            onClick={handleCategoryClick("friends")}
+            HoverTextContent="친구"
+            onClick={handleCategoryClick("친구")}
           />
           <CategoryImageFrame
             Image={StaticCompany}
             Gif={CompanyGIF}
-            HoverTextContent="COMPANY"
-            onClick={handleCategoryClick("company")}
+            HoverTextContent="회사"
+            onClick={handleCategoryClick("회사")}
           />
           <CategoryImageFrame
             Image={StaticLove}
             Gif={LoveGIF}
-            HoverTextContent="LOVE"
-            onClick={handleCategoryClick("love")}
+            HoverTextContent="사랑"
+            onClick={handleCategoryClick("사랑")}
           />
         </CategoryImageFrameContainer>
         <ReportButton onClick={handleReportClick} />

@@ -1,26 +1,28 @@
+// src/component/chatroom/CharacterFrame.jsx
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-// Card 스타일 정의
-const StyledCard = styled.div`  
-  margin:0.6rem;
+const StyledCard = styled.div`
+  margin: 0.6rem;
   display: flex;
-  border-radius: 30px; /* 화면 크기에 비례하여 둥글게 만듦 */
-  border: 3px solid white;
-  box-sizing: border-box; /* border가 안쪽에 적용되도록 설정 */
+  border-radius: 30px;
+  box-sizing: border-box;
   justify-content: center;
   align-items: center;
+  border: 3px solid
+    ${({ $isActive, $activeColor }) =>
+      $isActive ? $activeColor || "#00FF00" : "white"};
 `;
 
-// 이미지 스타일 정의
 const StyledCardContent = styled.div`
   display: flex;
   box-sizing: border-box;
+  border-radius: 30px;
 `;
 
-const CharacterFrame = ({ children }) => {
+const CharacterFrame = ({ children, isActive, activeColor }) => {
   return (
-    <StyledCard>
+    <StyledCard $isActive={isActive} $activeColor={activeColor}>
       <StyledCardContent>{children}</StyledCardContent>
     </StyledCard>
   );
@@ -28,6 +30,13 @@ const CharacterFrame = ({ children }) => {
 
 CharacterFrame.propTypes = {
   children: PropTypes.node.isRequired,
+  isActive: PropTypes.bool,
+  activeColor: PropTypes.string,
+};
+
+CharacterFrame.defaultProps = {
+  isActive: false,
+  activeColor: "white",
 };
 
 export default CharacterFrame;

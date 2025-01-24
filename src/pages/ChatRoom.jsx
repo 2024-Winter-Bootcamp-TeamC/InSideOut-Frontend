@@ -17,7 +17,7 @@ import Mute from "../assets/Mute.png";
 import Volume from "../assets/Volume.png";
 import PropTypes from "prop-types";
 
-/* 숫자 ID -> 캐릭터 이미지 */
+/* 숫자 ID -> 캐릭터 패널 표시용 이미지 */
 const emotionImageMap = {
   1: JoyPNG,
   2: SadnessPNG,
@@ -28,7 +28,6 @@ const emotionImageMap = {
   7: EmbarrassmentPNG,
 };
 
-/* 감정 이름 -> 채팅 박스 색상 */
 const emotionColorMap = {
   기쁨이: { titleColor: "#FFC738", summaryColor: "#FECE0C" },
   슬픔이: { titleColor: "#183B89", summaryColor: "#0F4D9B" },
@@ -37,6 +36,17 @@ const emotionColorMap = {
   소심이: { titleColor: "#5B3597", summaryColor: "#683DAC" },
   불안이: { titleColor: "#DF7416", summaryColor: "#F69F1E" },
   당황이: { titleColor: "#CD3364", summaryColor: "#DB4A7B" },
+};
+
+/* 감정 이름 -> 채팅 아바타(말풍선 왼쪽 아이콘) */
+const emotionNameToImage = {
+  기쁨이: JoyPNG,
+  슬픔이: SadnessPNG,
+  버럭이: AngerPNG,
+  까칠이: DisgustPNG,
+  소심이: FearPNG,
+  불안이: AnxietyPNG,
+  당황이: EmbarrassmentPNG,
 };
 
 const BackgroundContainer = styled.div`
@@ -69,6 +79,7 @@ const CharacterContainer = styled.div`
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
   margin: 1.1rem;
+
   & > * {
     display: flex;
     justify-content: center;
@@ -168,22 +179,34 @@ const ChatContainer = styled.div`
   padding: 3% 5%;
 `;
 
-const Message = styled.div`
-  border: ${({ $isUser, $borderColor }) =>
-    $isUser
-      ? "4px solid #877354"
-      : `4px solid ${$borderColor || "#B032F8"}`};
-    align-self: ${({ $isUser }) => ($isUser ? "flex-end" : "flex-start")};
+/* 메시지 한 줄 (아바타 + 말풍선) 컨테이너 */
+const MessageRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  flex-direction: ${({ $isUser }) => ($isUser ? "row-reverse" : "row")};
+`;
 
+/* 아바타(감정 이미지) 영역 */
+const Avatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: contain;
+  margin: ${({ $isUser }) => ($isUser ? "0 0 0 10px" : "0 10px 0 0")};
+`;
+
+/* 말풍선(채팅 버블) */
+const Bubble = styled.div`
+  border: ${({ $isUser, $borderColor }) =>
+    $isUser ? "4px solid #877354" : `4px solid ${$borderColor || "#B032F8"}`};
   border-radius: 20px;
   padding: 10px 15px;
-  margin-bottom: 10px;
   font-size: 12px;
   max-width: 70%;
   font-family: "BMHANNAPro", sans-serif;
   background-color: #ffffff;
-  color: ${({ $isUser, $bgColor }) =>
-    $isUser ? "#000" : $bgColor || "black"};
+  color: ${({ $isUser, $bgColor }) => ($isUser ? "#000" : $bgColor || "black")};
   white-space: pre-wrap;
 `;
 
@@ -303,7 +326,7 @@ const Icon = styled.img`
   height: 24px;
 `;
 
-const ChatRoom = ({ audioRef }) => {
+function ChatRoom({ audioRef }) {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -312,28 +335,26 @@ const ChatRoom = ({ audioRef }) => {
   const [volume, setVolume] = useState(1);
 
   const location = useLocation();
+  const navigate = useNavigate();
   const { user_id, chatroom_id, emotion_choose_ids } = location.state || {};
   const chatContainerRef = useRef(null);
 
-  // Web Audio API
   const audioContextRef = useRef(null);
   const gainNodeRef = useRef(null);
   const currentOffsetRef = useRef(0);
-
-  // 감정별 audio chunk 버퍼, 감정 간 재생 큐
+  const [isDiscussModalOpen, setIsDiscussModalOpen] = useState(false);
+  /* 감정별 버퍼, ex: { "기쁨이": { text:"...", audioChunks:[...]} } */
   const emotionBuffersRef = useRef({});
+
+  /* 마지막으로 SSE가 말한 감정 */
   const lastEmotionRef = useRef(null);
+
+  /* 재생 순서 (queue)에 감정을 push */
   const playQueueRef = useRef([]);
   const isPlayingRef = useRef(false);
 
-  // SSE fetch 완료 여부
   const [isFetchDone, setIsFetchDone] = useState(false);
-
-  // 보고서 생성 로딩
   const [isLoadingReport, setIsLoadingReport] = useState(false);
-
-  // react-router-dom으로 페이지 이동
-  const navigate = useNavigate();
 
   useEffect(() => {
     const audioCtx = new AudioContext();
@@ -346,13 +367,13 @@ const ChatRoom = ({ audioRef }) => {
     };
   }, []);
 
-  // SSE ping 테스트
+  // SSE ping
   useEffect(() => {
     const eventSource = new EventSource(
       `http://localhost:8000/api/chats/sse/${chatroom_id}`
     );
-    eventSource.onmessage = (e) => {
-      // ping or data
+    eventSource.onmessage = () => {
+      // ping
     };
     eventSource.onerror = () => {
       eventSource.close();
@@ -362,18 +383,22 @@ const ChatRoom = ({ audioRef }) => {
     };
   }, [chatroom_id]);
 
+  /* SSE 데이터 처리 */
   const handleSSEData = (data) => {
     if (data.type === "content_chunk") {
+      /* 이전 감정이랑 다르면 finalize -> queue에 쌓고, 새 감정 시작 */
       if (lastEmotionRef.current && lastEmotionRef.current !== data.emotion) {
         finalizeEmotion(lastEmotionRef.current);
       }
       lastEmotionRef.current = data.emotion;
+
       storeChunk(data.emotion, data.content, data.audio);
     } else if (data.type === "error") {
       console.error("AI Error:", data.message);
     }
   };
 
+  /* 감정별 audio chunk 쌓기 */
   const storeChunk = (emotionName, content, audioBase64) => {
     setMessages((prev) => {
       if (prev.length > 0 && prev[0].emotion === emotionName) {
@@ -393,6 +418,7 @@ const ChatRoom = ({ audioRef }) => {
     }
   };
 
+  /* 하나의 감정이 끝날 때 -> queue에 추가, playNext */
   const finalizeEmotion = (emotionName) => {
     playQueueRef.current.push(emotionName);
     playNext();
@@ -405,23 +431,30 @@ const ChatRoom = ({ audioRef }) => {
     }
   }, [isFetchDone]);
 
+  /* queue에서 감정 꺼내 재생 */
   const playNext = () => {
     if (isPlayingRef.current) return;
+
     const emotionName = playQueueRef.current.shift();
     if (!emotionName) return;
+
     isPlayingRef.current = true;
     const { audioChunks } = emotionBuffersRef.current[emotionName];
+
     playEmotionAudio(audioChunks).then(() => {
+      // 재생 끝
+      // 해당 감정 버퍼는 소진
+      emotionBuffersRef.current[emotionName] = { text: "", audioChunks: [] };
       isPlayingRef.current = false;
+      // 다음이 있으면 playNext
       playNext();
     });
   };
 
+  /* 감정 오디오 chunks를 gapless 재생 */
   const playEmotionAudio = async (audioChunks) => {
     for (const base64 of audioChunks) {
-      try {
-        await decodeAndScheduleAudio(base64);
-      } catch {}
+      await decodeAndScheduleAudio(base64);
     }
     const audioCtx = audioContextRef.current;
     const waitTime = currentOffsetRef.current - audioCtx.currentTime;
@@ -451,6 +484,7 @@ const ChatRoom = ({ audioRef }) => {
     currentOffsetRef.current = startTime + audioBuffer.duration;
   };
 
+  /* 메시지 전송(기본 모드) */
   const sendMessageBasicMode = async () => {
     if (!inputText.trim()) return;
     setMessages((prev) => [
@@ -458,31 +492,45 @@ const ChatRoom = ({ audioRef }) => {
       ...prev,
     ]);
     try {
+      // 오디오 상태 초기화
       lastEmotionRef.current = null;
       emotionBuffersRef.current = {};
       playQueueRef.current = [];
       isPlayingRef.current = false;
       currentOffsetRef.current = 0;
 
+      // 유저가 고른 감정(숫자 IDs) -> 한글 감정 배열
       const emotionNames = emotion_choose_ids.map((id) => {
-        if (id === 1) return "기쁨이";
-        if (id === 2) return "슬픔이";
-        if (id === 3) return "버럭이";
-        if (id === 4) return "까칠이";
-        if (id === 5) return "소심이";
-        if (id === 6) return "불안이";
-        if (id === 7) return "당황이";
-        return "기쁨이";
+        switch (id) {
+          case 1:
+            return "기쁨이";
+          case 2:
+            return "슬픔이";
+          case 3:
+            return "버럭이";
+          case 4:
+            return "까칠이";
+          case 5:
+            return "소심이";
+          case 6:
+            return "불안이";
+          case 7:
+            return "당황이";
+          default:
+            return "기쁨이";
+        }
       });
 
       const url = `http://localhost:8000/api/chats/${chatroom_id}/messages?user_id=${user_id}`;
+      const body = {
+        emotions: emotionNames,
+        prompt: inputText,
+      };
+
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          emotions: emotionNames,
-          prompt: inputText,
-        }),
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         console.error("기본 모드 요청 실패");
@@ -493,6 +541,7 @@ const ChatRoom = ({ audioRef }) => {
       const decoder = new TextDecoder("utf-8");
       let buffer = "";
       setIsFetchDone(false);
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
@@ -515,107 +564,33 @@ const ChatRoom = ({ audioRef }) => {
         }
         buffer = lines[lines.length - 1];
       }
-    } catch (error) {
-      console.error("기본 모드 SSE 오류:", error);
+    } catch (err) {
+      console.error("기본 모드 SSE 오류:", err);
     }
   };
 
   const addMessage = async () => {
-    if (inputText.trim() === "") return;
+    if (!inputText.trim()) return;
     await sendMessageBasicMode();
   };
 
-  const startDiscuss = async () => {
-    try {
-      lastEmotionRef.current = null;        
-      emotionBuffersRef.current = {};    
-      playQueueRef.current = [];        
-      isPlayingRef.current = false;        
-      currentOffsetRef.current = 0;        
-
-  
-      // --- (2) 감정 이름 매핑 ---
-      const emotionNames = emotion_choose_ids.map((id) => {
-        if (id === 1) return "기쁨이";
-        if (id === 2) return "슬픔이";
-        if (id === 3) return "버럭이";
-        if (id === 4) return "까칠이";
-        if (id === 5) return "소심이";
-        if (id === 6) return "불안이";
-        if (id === 7) return "당황이";
-        return "기쁨이"; 
-      });
-  
-      // --- (3) 논쟁모드 SSE 요청 ---
-      const url = `http://localhost:8000/api/chats/${chatroom_id}/discussions?user_id=${user_id}`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emotions: emotionNames }),
-      });
-  
-      if (!response.ok) {
-        console.error("논쟁 모드 요청 실패");
-        return;
-      }
-  
-      // --- (4) SSE 스트림 수신 ---
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let buffer = "";
-  
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          // SSE 끝
-          break;
-        }
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        for (let i = 0; i < lines.length - 1; i++) {
-          const line = lines[i].trim();
-          if (line.startsWith("data: ")) {
-            const jsonStr = line.substring("data: ".length);
-            if (jsonStr !== "[DONE]") {
-              try {
-                const parsed = JSON.parse(jsonStr);
-                handleSSEData(parsed); 
-              } catch (error) {
-                console.error("JSON 파싱 오류:", error);
-              }
-            }
-          }
-        }
-        buffer = lines[lines.length - 1];
-      }
-  
-      // 필요하다면 마지막 감정 finalize ...
-      // if (lastEmotionRef.current) {
-      //   finalizeEmotion(lastEmotionRef.current);
-      //   lastEmotionRef.current = null;
-      // }
-    } catch (error) {
-      console.error("논쟁 모드 SSE 오류:", error);
-    }
-  };
-
-
+  /* 대화 끝내기 -> 보고서 생성 */
   const handleChatFinishButton = () => {
     setIsModalOpen(true);
   };
 
-  // (★) 여기서 보고서 생성 API 호출 + 로딩 표시
   const handleModalConfirm = async () => {
     setIsModalOpen(false);
     setIsLoadingReport(true);
     try {
+      // 오디오 상태 초기화
       lastEmotionRef.current = null;
       emotionBuffersRef.current = {};
       playQueueRef.current = [];
       isPlayingRef.current = false;
       currentOffsetRef.current = 0;
       setIsFetchDone(false);
-      // 보고서 생성 API: POST /api/reports/{user_id}?chatroom_id=...
+
       const url = `http://localhost:8000/api/reports/${user_id}?chatroom_id=${chatroom_id}`;
       const response = await fetch(url, {
         method: "POST",
@@ -627,19 +602,17 @@ const ChatRoom = ({ audioRef }) => {
         const data = await response.json();
         if (data.status === "success") {
           const report_id = data.report_id;
-          console.log("리포트 생성 성공:", report_id);
           setMessages([]);
           lastEmotionRef.current = null;
           emotionBuffersRef.current = {};
           playQueueRef.current = [];
           isPlayingRef.current = false;
           currentOffsetRef.current = 0;
-          // 이동
-          navigate(`/reportDetail`, { state: { report_id,user_id } });
+          navigate("/reportDetail", { state: { report_id, user_id } });
         }
       }
-    } catch (error) {
-      console.error("리포트 생성 중 오류:", error);
+    } catch (err) {
+      console.error("리포트 생성 중 오류:", err);
     } finally {
       setIsLoadingReport(false);
     }
@@ -649,10 +622,12 @@ const ChatRoom = ({ audioRef }) => {
     setIsModalOpen(false);
   };
 
+  /* 모드 토글 */
   const toggleMode = () => {
     setIsActive((prev) => (prev === "messages" ? "discussions" : "messages"));
   };
 
+  /* 음소거/볼륨 */
   const toggleMute = () => {
     setIsMuted(!isMuted);
     if (audioRef.current) {
@@ -669,6 +644,90 @@ const ChatRoom = ({ audioRef }) => {
     if (gainNodeRef.current && !isMuted) {
       gainNodeRef.current.gain.value = newVolume;
     }
+  };
+  const handleDiscussStartButton = () => {
+    setIsDiscussModalOpen(true);
+  };
+  const handleDiscussModalConfirm = async () => {
+    setIsDiscussModalOpen(false);
+
+    try {
+      // 오디오 상태 초기화
+      lastEmotionRef.current = null;
+      emotionBuffersRef.current = {};
+      playQueueRef.current = [];
+      isPlayingRef.current = false;
+      currentOffsetRef.current = 0;
+      setIsFetchDone(false);
+
+      const emotionNames = emotion_choose_ids.map((id) => {
+        switch (id) {
+          case 1:
+            return "기쁨이";
+          case 2:
+            return "슬픔이";
+          case 3:
+            return "버럭이";
+          case 4:
+            return "까칠이";
+          case 5:
+            return "소심이";
+          case 6:
+            return "불안이";
+          case 7:
+            return "당황이";
+          default:
+            return "기쁨이";
+        }
+      });
+
+      const url = `http://localhost:8000/api/chats/${chatroom_id}/discussions?user_id=${user_id}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emotions: emotionNames }),
+      });
+
+      if (!response.ok) {
+        console.error("논쟁 모드 요청 실패");
+      } else {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            setIsFetchDone(true);
+            break;
+          }
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          for (let i = 0; i < lines.length - 1; i++) {
+            const line = lines[i].trim();
+            if (line.startsWith("data: ")) {
+              const jsonStr = line.substring("data: ".length);
+              if (jsonStr !== "[DONE]") {
+                try {
+                  const parsed = JSON.parse(jsonStr);
+                  handleSSEData(parsed);
+                } catch (error) {
+                  console.error("JSON 파싱 오류:", error);
+                }
+              }
+            }
+          }
+          buffer = lines[lines.length - 1];
+        }
+      }
+    } catch (err) {
+      console.error("논쟁 모드 SSE 오류:", err);
+    } finally {
+      setIsLoadingReport(false); // 로딩 스피너 숨기기
+    }
+  };
+  const handleDiscussModalCancel = () => {
+    setIsDiscussModalOpen(false);
   };
 
   return (
@@ -720,6 +779,7 @@ const ChatRoom = ({ audioRef }) => {
                 {isActive === "messages" ? "일반 모드" : "논쟁 모드"}
               </ToggleText>
             </ModeSelectWrapper>
+
             <ChatContainerWrapper>
               <ChatContainer ref={chatContainerRef}>
                 {messages.map((msg, idx) => {
@@ -728,15 +788,22 @@ const ChatRoom = ({ audioRef }) => {
                     : null;
                   const borderColor = colorData?.titleColor;
                   const bgColor = colorData?.summaryColor;
+
+                  const avatar = msg.isUser
+                    ? RileyPNG
+                    : emotionNameToImage[msg.emotion] || AngerPNG;
+
                   return (
-                    <Message
-                      key={idx}
-                      $isUser={msg.isUser}
-                      $borderColor={borderColor}
-                      $bgColor={bgColor}
-                    >
-                      {msg.text}
-                    </Message>
+                    <MessageRow $isUser={msg.isUser} key={idx}>
+                      <Avatar src={avatar} $isUser={msg.isUser} />
+                      <Bubble
+                        $isUser={msg.isUser}
+                        $borderColor={borderColor}
+                        $bgColor={bgColor}
+                      >
+                        {msg.text}
+                      </Bubble>
+                    </MessageRow>
                   );
                 })}
               </ChatContainer>
@@ -764,19 +831,13 @@ const ChatRoom = ({ audioRef }) => {
               >
                 <rect width="53" height="53" fill="#F5F5F5" />
                 <path
-                  d="M-607.5 12C-607.5 2.8873 -600.113 -4.5 -591 -4.5L51.0001 -4.5C60.1127 -4.5 67.5 2.88729 67.5 12V45C67.5 54.1127 60.1127 61.5 51 61.5H-591C-600.113 61.5 -607.5 54.1127 -607.5 45V12Z"
-                  fill="white"
-                  stroke="white"
-                  strokeWidth="7"
-                />
-                <path
                   d="M4.41675 46.375L50.7917 26.5L4.41675 6.625V22.0833L37.5417 26.5L4.41675 30.9167V46.375Z"
                   fill="#8338B5"
                 />
               </SvgSendButton>
             </InputContainer>
           ) : (
-            <DiscussStartButton onClick={startDiscuss}>
+            <DiscussStartButton onClick={handleDiscussStartButton}>
               논쟁모드 시작하기
             </DiscussStartButton>
           )}
@@ -784,7 +845,11 @@ const ChatRoom = ({ audioRef }) => {
 
         <VolumeControl>
           <MuteButton onClick={toggleMute}>
-            {isMuted ? <Icon src={Mute} alt="Mute" /> : <Icon src={Volume} alt="Volume" />}
+            {isMuted ? (
+              <Icon src={Mute} alt="Mute" />
+            ) : (
+              <Icon src={Volume} alt="Volume" />
+            )}
           </MuteButton>
           <VolumeSlider
             type="range"
@@ -797,12 +862,25 @@ const ChatRoom = ({ audioRef }) => {
         </VolumeControl>
 
         {isModalOpen && (
-          <Modal onConfirm={handleModalConfirm} onCancel={handleModalCancel} />
+          <Modal
+            onConfirm={handleModalConfirm}
+            onCancel={handleModalCancel}
+            context="정말 대화를 끝내시겠습니까?"
+          />
         )}
       </BackgroundContainer>
+
+      {/* 논쟁 모드 모달 추가 */}
+      {isDiscussModalOpen && (
+        <Modal
+          onConfirm={handleDiscussModalConfirm}
+          onCancel={handleDiscussModalCancel}
+          context="논쟁모드를 시작하시겠습니까?"
+        ></Modal>
+      )}
     </>
   );
-};
+}
 
 ChatRoom.propTypes = {
   audioRef: PropTypes.shape({

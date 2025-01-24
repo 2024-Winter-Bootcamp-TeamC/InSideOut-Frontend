@@ -54,13 +54,14 @@ const HoverTextContainer = styled.div`
 // HoverText: HoverTextContainer 내부에 표시되는 텍스트
 const HoverText = styled.div`
   color: #fff; /* 텍스트 색상 */
-  font-size: 50px; /* 텍스트 크기 */
+  font-size: 40px; /* 텍스트 크기 */
   font-weight: bold; /* 텍스트 굵기 */
   font-family: "BMHANNAPro", sans-serif; /* 폰트 */
 `;
 
+
 // CategoryImageFrame: 이미지와 텍스트를 포함한 카드 컴포넌트
-const CategoryImageFrame = ({ Image, Gif, HoverTextContent, onClick }) => {
+const CategoryImageFrame = ({ Image, Gif, HoverTextContent,onClick }) => {
   return (
     <StyledCard Image={Image} Gif={Gif} onClick={onClick}>
       {/* Hover 시 표시될 텍스트 컨테이너 */}

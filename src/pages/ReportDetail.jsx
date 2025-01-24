@@ -69,8 +69,7 @@ const ReportDetail = () => {
 
   const handleHomeButtonClick = () => {
     console.log("홈 버튼 클릭");
-    navigate("/reportlist", { state: { user_id } });
-    // 홈 버튼 클릭 시 동작 추가
+    navigate("/category", { state: { user_id } });
   };
 
   useEffect(() => {
@@ -164,7 +163,7 @@ const ReportDetail = () => {
   return (
     <Container>
       <ReportDetailContainer>
-        <TitleText>{reportdetail?.title || "제목 없음"}</TitleText>
+        <TitleText>보고서 상세</TitleText>
         <SimulationContainer>
           <SimulationText>상황요약</SimulationText>
           <SmulText>{reportdetail?.situation_summary || "내용 없음"}</SmulText>
@@ -282,11 +281,11 @@ const TitleText = styled.p`
   color: #000;
   text-align: center;
   font-family: "BM HANNA Pro";
-  font-size: 60px;
+  font-size: 55px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  top: 1%;
+  top: 2%;
   left: 5%;
 `;
 

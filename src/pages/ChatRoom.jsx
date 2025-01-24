@@ -1,15 +1,43 @@
 import styled from "styled-components";
 import { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../component/chatroom/ChatFinishModal";
+import Loading from "../component/loading";
 import ChatRoomBackground from "../assets/chatroom/Background.png";
 import CharacterFrame from "../component/chatroom/CharacterFrame";
 import AngerPNG from "../assets/chatroom/Anger.png";
 import JoyPNG from "../assets/chatroom/Joy.png";
 import SadnessPNG from "../assets/chatroom/Sadness.png";
 import EmbarrassmentPNG from "../assets/chatroom/Embarrassment.png";
+import FearPNG from "../assets/chatroom/Fear.png";
+import DisgustPNG from "../assets/chatroom/Disgust.png";
+import AnxietyPNG from "../assets/chatroom/Anxiety.png";
+import RileyPNG from "../assets/chatroom/Riley.png";
 import Mute from "../assets/Mute.png";
 import Volume from "../assets/Volume.png";
 import PropTypes from "prop-types";
+
+/* 숫자 ID -> 캐릭터 이미지 */
+const emotionImageMap = {
+  1: JoyPNG,
+  2: SadnessPNG,
+  3: AngerPNG,
+  4: DisgustPNG,
+  5: FearPNG,
+  6: AnxietyPNG,
+  7: EmbarrassmentPNG,
+};
+
+/* 감정 이름 -> 채팅 박스 색상 */
+const emotionColorMap = {
+  기쁨이: { titleColor: "#FFC738", summaryColor: "#FECE0C" },
+  슬픔이: { titleColor: "#183B89", summaryColor: "#0F4D9B" },
+  버럭이: { titleColor: "#FF3529", summaryColor: "#EE4135" },
+  까칠이: { titleColor: "#106B1A", summaryColor: "#278B1E" },
+  소심이: { titleColor: "#5B3597", summaryColor: "#683DAC" },
+  불안이: { titleColor: "#DF7416", summaryColor: "#F69F1E" },
+  당황이: { titleColor: "#CD3364", summaryColor: "#DB4A7B" },
+};
 
 const BackgroundContainer = styled.div`
   width: 100vw;
@@ -22,27 +50,25 @@ const BackgroundContainer = styled.div`
   align-items: flex-start;
   box-sizing: border-box;
   overflow: hidden;
-  padding: 5rem 11rem; /*위아래, 양쪽*/
+  padding: 5rem 11rem;
 `;
 
 const CharacterContainerWrapper = styled.div`
-  width: 45%; /* 왼쪽 영역 너비 */
+  width: 45%;
   height: 100%;
-  display: flex; /* 플렉스 박스를 사용하여 정렬 */
-  flex-direction: column; /* 세로 방향으로 정렬 */
-  align-items: center; /* 가로 가운데 정렬 */
-  justify-content: center; /* 세로 가운데 정렬 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const CharacterContainer = styled.div`
   width: 100%;
-  aspect-ratio: 1; /* 1:1 비율을 유지 */
+  aspect-ratio: 1;
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 두 개의 컬럼 */
-  grid-template-rows: repeat(2, 1fr); /* 두 개의 행 */
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   margin: 1.1rem;
-
-  /* 각 그리드 아이템의 정렬 */
   & > * {
     display: flex;
     justify-content: center;
@@ -51,17 +77,18 @@ const CharacterContainer = styled.div`
 `;
 
 const ChatroomContaninerWrapper = styled.div`
-  width: 47.5%; /* 오른쪽 영역 너비 */
-  height: 105%;
-  display: flex; /* 플렉스 박스를 사용하여 정렬 */
-  flex-direction: column; /* 세로 방향으로 정렬 */
-  align-items: center; /* 가로 가운데 정렬 */
-  justify-content: center; /* 세로 가운데 정렬 */
+  width: 47.5%;
+  height: 104%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const SecondWrapper = styled.div`
   width: 100%;
-  aspect-ratio: 1; /* 1:1 비율을 유지 */
+  height: 82%;
+  aspect-ratio: 1;
   overflow-y: hidden;
   border-radius: 20px;
   background-color: #ffffffba;
@@ -72,21 +99,22 @@ const SecondWrapper = styled.div`
 
 const ChatContainerWrapper = styled.div`
   display: flex;
-  flex-direction: column; /* 세로 정렬을 유지합니다 */
-  justify-content: flex-end; /* 하단 정렬 */
-  align-items: center; /* 가로 정렬 */
-  height: 100%; /* 부모 컨테이너의 높이를 채웁니다 */
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
   width: 100%;
 `;
 
 const ModeSelectWrapper = styled.div`
   position: absolute;
   display: flex;
-  top: 13%;
+  top: 15%;
   left: 60%;
   justify-content: center;
   align-items: center;
-  background-color: ${({ $isActive }) => ($isActive ? "#4caf50" : "#f32125")};
+  background-color: ${({ $isActive }) =>
+    $isActive === "messages" ? "#4caf50" : "#f32125"};
   transition: background-color 0.3s ease;
   border-radius: 30px;
   padding: 5px 15px;
@@ -97,9 +125,9 @@ const ModeSelectWrapper = styled.div`
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 15px;
   transition: transform 0.3s ease;
-
   border: none;
-  outline: none; /* 기본 포커스 테두리 제거 */
+  outline: none;
+
   &:hover {
     transform: scale(1.05);
   }
@@ -107,7 +135,7 @@ const ModeSelectWrapper = styled.div`
     transform: scale(0.95);
   }
   &:focus {
-    outline: none; /* 포커스 상태일 때도 테두리 제거 */
+    outline: none;
   }
 `;
 
@@ -141,16 +169,22 @@ const ChatContainer = styled.div`
 `;
 
 const Message = styled.div`
-  border: ${({ $isUser }) =>
-    $isUser ? "4px solid #877354" : "4px solid #B032F8"};
-  align-self: ${({ $isUser }) => ($isUser ? "flex-end" : "flex-start")};
+  border: ${({ $isUser, $borderColor }) =>
+    $isUser
+      ? "4px solid #877354"
+      : `4px solid ${$borderColor || "#B032F8"}`};
+    align-self: ${({ $isUser }) => ($isUser ? "flex-end" : "flex-start")};
+
   border-radius: 20px;
   padding: 10px 15px;
   margin-bottom: 10px;
   font-size: 12px;
   max-width: 70%;
   font-family: "BMHANNAPro", sans-serif;
-  background-color: white;
+  background-color: #ffffff;
+  color: ${({ $isUser, $bgColor }) =>
+    $isUser ? "#000" : $bgColor || "black"};
+  white-space: pre-wrap;
 `;
 
 const InputContainer = styled.div`
@@ -172,6 +206,8 @@ const TextInput = styled.input`
   padding: 5px;
   outline: none;
   font-family: "BMHANNAPro", sans-serif;
+  background-color: #fff;
+  color: #000;
 `;
 
 const ChatFinishButton = styled.button`
@@ -193,7 +229,32 @@ const ChatFinishButton = styled.button`
     transform: scale(0.95);
   }
   &:focus {
-    outline: none; /* 포커스 상태일 때도 테두리 제거 */
+    outline: none;
+  }
+`;
+
+const DiscussStartButton = styled.button`
+  background-color: #f44336;
+  border-radius: 1.25rem;
+  width: 17rem;
+  height: 3.3rem;
+  font-family: "BMHANNAPro", sans-serif;
+  font-size: 1.5rem;
+  color: white;
+  transition: transform 0.3s ease;
+  border: none;
+  outline: none;
+  padding: 8px;
+  margin-top: 1rem;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -201,12 +262,13 @@ const SvgSendButton = styled.svg`
   width: 45px;
   height: 45px;
   cursor: pointer;
+
   &:hover {
-    transform: scale(1.1); /* 마우스 오버 시 크기 확대 효과 */
+    transform: scale(1.1);
     transition: transform 0.2s ease;
   }
   &:active {
-    transform: scale(0.9); /* 클릭 시 크기 축소 효과 */
+    transform: scale(0.9);
   }
 `;
 
@@ -245,55 +307,350 @@ const ChatRoom = ({ audioRef }) => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState("messages");
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
 
+  const location = useLocation();
+  const { user_id, chatroom_id, emotion_choose_ids } = location.state || {};
   const chatContainerRef = useRef(null);
 
-  const fetchMessages = async () => {
-    const mockMessages = [
-      { text: "안녕하세요!", isUser: false },
-      { text: "안녕하세요, 반갑습니다!", isUser: true },
-    ];
-    return new Promise((resolve) =>
-      setTimeout(() => resolve(mockMessages), 1000)
+  // Web Audio API
+  const audioContextRef = useRef(null);
+  const gainNodeRef = useRef(null);
+  const currentOffsetRef = useRef(0);
+
+  // 감정별 audio chunk 버퍼, 감정 간 재생 큐
+  const emotionBuffersRef = useRef({});
+  const lastEmotionRef = useRef(null);
+  const playQueueRef = useRef([]);
+  const isPlayingRef = useRef(false);
+
+  // SSE fetch 완료 여부
+  const [isFetchDone, setIsFetchDone] = useState(false);
+
+  // 보고서 생성 로딩
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
+
+  // react-router-dom으로 페이지 이동
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const audioCtx = new AudioContext();
+    const gainNode = audioCtx.createGain();
+    gainNode.connect(audioCtx.destination);
+    audioContextRef.current = audioCtx;
+    gainNodeRef.current = gainNode;
+    return () => {
+      audioCtx.close();
+    };
+  }, []);
+
+  // SSE ping 테스트
+  useEffect(() => {
+    const eventSource = new EventSource(
+      `http://localhost:8000/api/chats/sse/${chatroom_id}`
     );
+    eventSource.onmessage = (e) => {
+      // ping or data
+    };
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+    return () => {
+      eventSource.close();
+    };
+  }, [chatroom_id]);
+
+  const handleSSEData = (data) => {
+    if (data.type === "content_chunk") {
+      if (lastEmotionRef.current && lastEmotionRef.current !== data.emotion) {
+        finalizeEmotion(lastEmotionRef.current);
+      }
+      lastEmotionRef.current = data.emotion;
+      storeChunk(data.emotion, data.content, data.audio);
+    } else if (data.type === "error") {
+      console.error("AI Error:", data.message);
+    }
+  };
+
+  const storeChunk = (emotionName, content, audioBase64) => {
+    setMessages((prev) => {
+      if (prev.length > 0 && prev[0].emotion === emotionName) {
+        const updated = { ...prev[0], text: prev[0].text + content };
+        return [updated, ...prev.slice(1)];
+      } else {
+        const newMsg = { emotion: emotionName, text: content, isUser: false };
+        return [newMsg, ...prev];
+      }
+    });
+    if (!emotionBuffersRef.current[emotionName]) {
+      emotionBuffersRef.current[emotionName] = { text: "", audioChunks: [] };
+    }
+    emotionBuffersRef.current[emotionName].text += content;
+    if (audioBase64) {
+      emotionBuffersRef.current[emotionName].audioChunks.push(audioBase64);
+    }
+  };
+
+  const finalizeEmotion = (emotionName) => {
+    playQueueRef.current.push(emotionName);
+    playNext();
   };
 
   useEffect(() => {
-    const loadMessages = async () => {
-      const initialMessages = await fetchMessages();
-      setMessages(initialMessages);
-    };
-    loadMessages();
-  }, []);
+    if (isFetchDone && lastEmotionRef.current) {
+      finalizeEmotion(lastEmotionRef.current);
+      lastEmotionRef.current = null;
+    }
+  }, [isFetchDone]);
 
-  const addMessage = () => {
-    if (inputText.trim() === "") return;
-    setMessages((prev) => [{ text: inputText, isUser: true }, ...prev]);
-    setInputText("");
+  const playNext = () => {
+    if (isPlayingRef.current) return;
+    const emotionName = playQueueRef.current.shift();
+    if (!emotionName) return;
+    isPlayingRef.current = true;
+    const { audioChunks } = emotionBuffersRef.current[emotionName];
+    playEmotionAudio(audioChunks).then(() => {
+      isPlayingRef.current = false;
+      playNext();
+    });
   };
+
+  const playEmotionAudio = async (audioChunks) => {
+    for (const base64 of audioChunks) {
+      try {
+        await decodeAndScheduleAudio(base64);
+      } catch {}
+    }
+    const audioCtx = audioContextRef.current;
+    const waitTime = currentOffsetRef.current - audioCtx.currentTime;
+    return new Promise((resolve) => {
+      setTimeout(resolve, waitTime * 1000);
+    });
+  };
+
+  const decodeAndScheduleAudio = async (base64) => {
+    if (!base64 || !audioContextRef.current) return;
+    const audioCtx = audioContextRef.current;
+    const binary = atob(base64);
+    const array = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      array[i] = binary.charCodeAt(i);
+    }
+    const audioBuffer = await audioCtx.decodeAudioData(array.buffer);
+    const source = audioCtx.createBufferSource();
+    source.buffer = audioBuffer;
+    if (gainNodeRef.current) {
+      source.connect(gainNodeRef.current);
+    } else {
+      source.connect(audioCtx.destination);
+    }
+    const startTime = Math.max(audioCtx.currentTime, currentOffsetRef.current);
+    source.start(startTime);
+    currentOffsetRef.current = startTime + audioBuffer.duration;
+  };
+
+  const sendMessageBasicMode = async () => {
+    if (!inputText.trim()) return;
+    setMessages((prev) => [
+      { emotion: null, text: inputText, isUser: true },
+      ...prev,
+    ]);
+    try {
+      lastEmotionRef.current = null;
+      emotionBuffersRef.current = {};
+      playQueueRef.current = [];
+      isPlayingRef.current = false;
+      currentOffsetRef.current = 0;
+
+      const emotionNames = emotion_choose_ids.map((id) => {
+        if (id === 1) return "기쁨이";
+        if (id === 2) return "슬픔이";
+        if (id === 3) return "버럭이";
+        if (id === 4) return "까칠이";
+        if (id === 5) return "소심이";
+        if (id === 6) return "불안이";
+        if (id === 7) return "당황이";
+        return "기쁨이";
+      });
+
+      const url = `http://localhost:8000/api/chats/${chatroom_id}/messages?user_id=${user_id}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          emotions: emotionNames,
+          prompt: inputText,
+        }),
+      });
+      if (!response.ok) {
+        console.error("기본 모드 요청 실패");
+        return;
+      }
+      setInputText("");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+      setIsFetchDone(false);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          setIsFetchDone(true);
+          break;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        for (let i = 0; i < lines.length - 1; i++) {
+          const line = lines[i].trim();
+          if (line.startsWith("data: ")) {
+            const jsonStr = line.substring("data: ".length);
+            if (jsonStr !== "[DONE]") {
+              try {
+                const parsed = JSON.parse(jsonStr);
+                handleSSEData(parsed);
+              } catch {}
+            }
+          }
+        }
+        buffer = lines[lines.length - 1];
+      }
+    } catch (error) {
+      console.error("기본 모드 SSE 오류:", error);
+    }
+  };
+
+  const addMessage = async () => {
+    if (inputText.trim() === "") return;
+    await sendMessageBasicMode();
+  };
+
+  const startDiscuss = async () => {
+    try {
+      lastEmotionRef.current = null;        
+      emotionBuffersRef.current = {};    
+      playQueueRef.current = [];        
+      isPlayingRef.current = false;        
+      currentOffsetRef.current = 0;        
+
+  
+      // --- (2) 감정 이름 매핑 ---
+      const emotionNames = emotion_choose_ids.map((id) => {
+        if (id === 1) return "기쁨이";
+        if (id === 2) return "슬픔이";
+        if (id === 3) return "버럭이";
+        if (id === 4) return "까칠이";
+        if (id === 5) return "소심이";
+        if (id === 6) return "불안이";
+        if (id === 7) return "당황이";
+        return "기쁨이"; 
+      });
+  
+      // --- (3) 논쟁모드 SSE 요청 ---
+      const url = `http://localhost:8000/api/chats/${chatroom_id}/discussions?user_id=${user_id}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emotions: emotionNames }),
+      });
+  
+      if (!response.ok) {
+        console.error("논쟁 모드 요청 실패");
+        return;
+      }
+  
+      // --- (4) SSE 스트림 수신 ---
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+  
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          // SSE 끝
+          break;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        for (let i = 0; i < lines.length - 1; i++) {
+          const line = lines[i].trim();
+          if (line.startsWith("data: ")) {
+            const jsonStr = line.substring("data: ".length);
+            if (jsonStr !== "[DONE]") {
+              try {
+                const parsed = JSON.parse(jsonStr);
+                handleSSEData(parsed); 
+              } catch (error) {
+                console.error("JSON 파싱 오류:", error);
+              }
+            }
+          }
+        }
+        buffer = lines[lines.length - 1];
+      }
+  
+      // 필요하다면 마지막 감정 finalize ...
+      // if (lastEmotionRef.current) {
+      //   finalizeEmotion(lastEmotionRef.current);
+      //   lastEmotionRef.current = null;
+      // }
+    } catch (error) {
+      console.error("논쟁 모드 SSE 오류:", error);
+    }
+  };
+
 
   const handleChatFinishButton = () => {
     setIsModalOpen(true);
   };
 
-  const handleModalConfirm = () => {
+  // (★) 여기서 보고서 생성 API 호출 + 로딩 표시
+  const handleModalConfirm = async () => {
     setIsModalOpen(false);
-    alert("대화 끝내기");
-    setMessages([]);
+    setIsLoadingReport(true);
+    try {
+      lastEmotionRef.current = null;
+      emotionBuffersRef.current = {};
+      playQueueRef.current = [];
+      isPlayingRef.current = false;
+      currentOffsetRef.current = 0;
+      setIsFetchDone(false);
+      // 보고서 생성 API: POST /api/reports/{user_id}?chatroom_id=...
+      const url = `http://localhost:8000/api/reports/${user_id}?chatroom_id=${chatroom_id}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        console.error("리포트 생성 실패");
+      } else {
+        const data = await response.json();
+        if (data.status === "success") {
+          const report_id = data.report_id;
+          console.log("리포트 생성 성공:", report_id);
+          setMessages([]);
+          lastEmotionRef.current = null;
+          emotionBuffersRef.current = {};
+          playQueueRef.current = [];
+          isPlayingRef.current = false;
+          currentOffsetRef.current = 0;
+          // 이동
+          navigate(`/reportDetail`, { state: { report_id,user_id } });
+        }
+      }
+    } catch (error) {
+      console.error("리포트 생성 중 오류:", error);
+    } finally {
+      setIsLoadingReport(false);
+    }
   };
 
   const handleModalCancel = () => {
     setIsModalOpen(false);
   };
 
-  const handleToggle = () => {
-    setIsActive((prev) => {
-      console.log("isActive:", !prev); // 상태 변경 확인
-      return !prev;
-    });
+  const toggleMode = () => {
+    setIsActive((prev) => (prev === "messages" ? "discussions" : "messages"));
   };
 
   const toggleMute = () => {
@@ -301,126 +658,149 @@ const ChatRoom = ({ audioRef }) => {
     if (audioRef.current) {
       audioRef.current.muted = !isMuted;
     }
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = !isMuted ? 0 : volume;
+    }
   };
 
-  // 볼륨 조절 핸들러
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-      setIsMuted(newVolume === 0); // 볼륨이 0일 때 음소거 상태로 설정
+    if (gainNodeRef.current && !isMuted) {
+      gainNodeRef.current.gain.value = newVolume;
     }
   };
 
   return (
-    <BackgroundContainer>
-      <CharacterContainerWrapper>
-        <CharacterContainer>
-          <CharacterFrame>
-            <img src={AngerPNG} />
-          </CharacterFrame>
-          <CharacterFrame>
-            <img src={JoyPNG} />
-          </CharacterFrame>
-          <CharacterFrame>
-            <img src={SadnessPNG} />
-          </CharacterFrame>
-          <CharacterFrame>
-            <img src={EmbarrassmentPNG} />
-          </CharacterFrame>
-        </CharacterContainer>
-        <ChatFinishButton onClick={handleChatFinishButton}>
-          대화 끝내기
-        </ChatFinishButton>
-      </CharacterContainerWrapper>
-      <ChatroomContaninerWrapper>
-        <SecondWrapper>
-          <ModeSelectWrapper $isActive={isActive} onClick={handleToggle}>
-            <ToggleSVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 36">
-              <rect
-                x="1"
-                y="1"
-                width="66"
-                height="34"
-                rx="17"
-                fill="white"
-                stroke="black"
-                strokeWidth="2"
+    <>
+      {isLoadingReport && <Loading text="리포트 생성 중..." />}
+      <BackgroundContainer>
+        <CharacterContainerWrapper>
+          <CharacterContainer>
+            {emotion_choose_ids.map((id) => (
+              <CharacterFrame key={id}>
+                <img src={emotionImageMap[id]} alt={`Emotion ${id}`} />
+              </CharacterFrame>
+            ))}
+            <CharacterFrame>
+              <img
+                src={RileyPNG}
+                alt="사용자 라일라"
+                style={{ borderRadius: "30px" }}
               />
-              <ToggleCircle
-                cx={isActive ? "50" : "17.75"}
-                cy="18"
-                r="9.75"
-                fill="black"
-              />
-            </ToggleSVG>
-            <ToggleText>{isActive ? "일반 모드" : "논쟁 모드"}</ToggleText>
-          </ModeSelectWrapper>
-          <ChatContainerWrapper>
-            <ChatContainer ref={chatContainerRef}>
-              {messages.map((message, index) => (
-                <Message key={index} $isUser={message.isUser}>
-                  {message.text}
-                </Message>
-              ))}
-            </ChatContainer>
-          </ChatContainerWrapper>
-        </SecondWrapper>
-        <InputContainer>
-          <TextInput
-            type="text"
-            placeholder="메시지를 입력해주세요."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-                e.preventDefault();
-                addMessage();
-              }
-            }}
-          />
-          <SvgSendButton
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 53 53"
-            onClick={addMessage} /* 클릭 시 메시지 추가 */
-          >
-            <rect width="53" height="53" fill="#F5F5F5" />
-            <path
-              d="M-607.5 12C-607.5 2.8873 -600.113 -4.5 -591 -4.5L51.0001 -4.5C60.1127 -4.5 67.5 2.88729 67.5 12V45C67.5 54.1127 60.1127 61.5 51 61.5H-591C-600.113 61.5 -607.5 54.1127 -607.5 45V12Z"
-              fill="white"
-              stroke="white"
-              strokeWidth="7"
-            />
-            <path
-              d="M4.41675 46.375L50.7917 26.5L4.41675 6.625V22.0833L37.5417 26.5L4.41675 30.9167V46.375Z"
-              fill="#8338B5"
-            />
-          </SvgSendButton>
-        </InputContainer>
-      </ChatroomContaninerWrapper>
+            </CharacterFrame>
+          </CharacterContainer>
+          <ChatFinishButton onClick={handleChatFinishButton}>
+            대화 끝내기
+          </ChatFinishButton>
+        </CharacterContainerWrapper>
 
-      <VolumeControl>
-        <MuteButton onClick={toggleMute}>
-          {isMuted ? (
-            <Icon src={Mute} alt="Mute" />
+        <ChatroomContaninerWrapper>
+          <SecondWrapper>
+            <ModeSelectWrapper $isActive={isActive} onClick={toggleMode}>
+              <ToggleSVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 36">
+                <rect
+                  x="1"
+                  y="1"
+                  width="66"
+                  height="34"
+                  rx="17"
+                  fill="white"
+                  stroke="black"
+                  strokeWidth="2"
+                />
+                <ToggleCircle
+                  cx={isActive === "messages" ? "50" : "17.75"}
+                  cy="18"
+                  r="9.75"
+                  fill="black"
+                />
+              </ToggleSVG>
+              <ToggleText>
+                {isActive === "messages" ? "일반 모드" : "논쟁 모드"}
+              </ToggleText>
+            </ModeSelectWrapper>
+            <ChatContainerWrapper>
+              <ChatContainer ref={chatContainerRef}>
+                {messages.map((msg, idx) => {
+                  const colorData = msg.emotion
+                    ? emotionColorMap[msg.emotion]
+                    : null;
+                  const borderColor = colorData?.titleColor;
+                  const bgColor = colorData?.summaryColor;
+                  return (
+                    <Message
+                      key={idx}
+                      $isUser={msg.isUser}
+                      $borderColor={borderColor}
+                      $bgColor={bgColor}
+                    >
+                      {msg.text}
+                    </Message>
+                  );
+                })}
+              </ChatContainer>
+            </ChatContainerWrapper>
+          </SecondWrapper>
+
+          {isActive === "messages" ? (
+            <InputContainer>
+              <TextInput
+                type="text"
+                placeholder="메시지를 입력해주세요."
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                    e.preventDefault();
+                    addMessage();
+                  }
+                }}
+              />
+              <SvgSendButton
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 53 53"
+                onClick={addMessage}
+              >
+                <rect width="53" height="53" fill="#F5F5F5" />
+                <path
+                  d="M-607.5 12C-607.5 2.8873 -600.113 -4.5 -591 -4.5L51.0001 -4.5C60.1127 -4.5 67.5 2.88729 67.5 12V45C67.5 54.1127 60.1127 61.5 51 61.5H-591C-600.113 61.5 -607.5 54.1127 -607.5 45V12Z"
+                  fill="white"
+                  stroke="white"
+                  strokeWidth="7"
+                />
+                <path
+                  d="M4.41675 46.375L50.7917 26.5L4.41675 6.625V22.0833L37.5417 26.5L4.41675 30.9167V46.375Z"
+                  fill="#8338B5"
+                />
+              </SvgSendButton>
+            </InputContainer>
           ) : (
-            <Icon src={Volume} alt="Volume" />
+            <DiscussStartButton onClick={startDiscuss}>
+              논쟁모드 시작하기
+            </DiscussStartButton>
           )}
-        </MuteButton>
-        <VolumeSlider
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={isMuted ? 0 : volume}
-          onChange={handleVolumeChange}
-        />
-      </VolumeControl>
-      {isModalOpen && (
-        <Modal onConfirm={handleModalConfirm} onCancel={handleModalCancel} />
-      )}
-    </BackgroundContainer>
+        </ChatroomContaninerWrapper>
+
+        <VolumeControl>
+          <MuteButton onClick={toggleMute}>
+            {isMuted ? <Icon src={Mute} alt="Mute" /> : <Icon src={Volume} alt="Volume" />}
+          </MuteButton>
+          <VolumeSlider
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={isMuted ? 0 : volume}
+            onChange={handleVolumeChange}
+          />
+        </VolumeControl>
+
+        {isModalOpen && (
+          <Modal onConfirm={handleModalConfirm} onCancel={handleModalCancel} />
+        )}
+      </BackgroundContainer>
+    </>
   );
 };
 
@@ -429,4 +809,5 @@ ChatRoom.propTypes = {
     current: PropTypes.instanceOf(Element),
   }).isRequired,
 };
+
 export default ChatRoom;

@@ -39,7 +39,18 @@ const ContentContainer = styled.div`
   box-sizing: border-box;
 `;
 
-// 카테고리 제목과 컨테이너 스타일 정의
+// 카테고리 제목 스타일
+const CategoryTitle1 = styled.div`
+  position: absolute;
+  color: #fff;
+  text-align: center;
+  font-family: "IntensaFuente", sans-serif;
+  font-size: 30px;
+  line-height: 160%;
+  font-family: "BM HANNA Pro";
+  top: 27%;
+`;
+
 const CategoryContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -55,6 +66,7 @@ const CategoryTitle = styled.div`
   font-family: "BMHANNAPro", sans-serif;
   font-size: 100px;
   line-height: 160%;
+    font-family: "BM HANNA Pro";
 `;
 
 const CategoryTitle1 = styled.div`
@@ -191,7 +203,7 @@ const CustomComponent = () => {
       <StarrySky /> {/* 별이 반짝이는 애니메이션 배경 */}
       <ContentContainer>
         <CategoryContainer>
-          <CategoryTitle>카테고리</CategoryTitle> {/* 카테고리 제목 */}
+          <CategoryTitle>카테고리</CategoryTitle>
           <CategoryTitle1>누구와 갈등이 있나요?</CategoryTitle1>
         </CategoryContainer>
         <CategoryImageFrameContainer>

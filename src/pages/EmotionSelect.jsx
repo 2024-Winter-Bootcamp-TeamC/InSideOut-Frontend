@@ -132,36 +132,42 @@ const ButtonStyled = styled(Button)`
 const SadnessContainer = styled(ButtonAndImageContainer)`
   top: 80%;
   right: 25%;
-  }
+  color: #000;
 `;
 
 const AngerContainer = styled(ButtonAndImageContainer)`
   top: 55%;
   right: 59%;
+  color: #000;
 `;
 
 const FearContainer = styled(ButtonAndImageContainer)`
   top: 16%;
   right: 80%;
+  color: #000;
 `;
 
 const DisgustContainer = styled(ButtonAndImageContainer)`
   top: 25%;
   right: 43%;
+  color: #000;
 `;
 const JoyContainer = styled(ButtonAndImageContainer)`
   top: 10%;
   right: 10%;
+  color: #000;
 `;
 
 const EmbarrassmentContainer = styled(ButtonAndImageContainer)`
   top: 50%;
   right: 10%;
+  color: #000;
 `;
 
 const AnxietyContainer = styled(ButtonAndImageContainer)`
   top: 83%;
   right: 77%;
+  color: #000;
 `;
 
 // 버튼 클릭 이벤트 핸들러
@@ -192,9 +198,9 @@ const EmotionSelect = () => {
     const fetchEmotionSummaries = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/emotions/${user_id}`
+          `http://localhost:8000/api/emotions/${user_id}`
         );
-
+        console.log(response.data);
         if (response.status === 200) {
           const cleanedString = response.data.slice(1, -1).replace(/'/g, '"');
           const parsedData = JSON.parse(cleanedString); // JSON 파싱
@@ -271,7 +277,7 @@ const EmotionSelect = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/chatrooms/20`, // user_id를 20으로 설정
+        `http://localhost:8000/api/chatrooms/${user_id}`,
         requestBody,
         {
           headers: {
@@ -285,9 +291,9 @@ const EmotionSelect = () => {
 
         navigate("/ChatRoom", {
           state: {
-            user_id: 20, // user_id 고정
+            user_id: user_id, // user_id 고정
             chatroom_id: response.data.chatroom_id,
-            emotion_choose_ids: response.data.emotion_choose_ids,
+            emotion_choose_ids: requestBody.emotion_ids,
           },
         });
       } else {

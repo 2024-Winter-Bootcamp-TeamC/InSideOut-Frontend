@@ -41,7 +41,7 @@ const Modal = ({ onConfirm, onCancel }) => {
   return (
     <ModalOverlay>
       <ModalContainer>
-        <p>정말 대화를 끝내겠습니까?</p>
+      <p style={{ color: "black",fontFamily: "BMHANNAPro" }}>정말 대화를 끝내겠습니까?</p>
         <ModalButton onClick={onConfirm}>확인</ModalButton>
         <ModalButton isCancel onClick={onCancel}>
           취소

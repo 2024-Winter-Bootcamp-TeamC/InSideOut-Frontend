@@ -51,12 +51,10 @@ const Preparation = () => {
     });
 
     formData.append("content", textContent);
-    formData.append("user_id", user_id);
-    formData.append("category", category);
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/preparations/",
+        `http://localhost:8000/api/preparations?user_id=${user_id}&category=${category}`,
         formData,
         {
           headers: {
@@ -101,7 +99,7 @@ const Preparation = () => {
 
   return (
     <Container>
-      {loading && <Loading text="캐릭터 생성 중" />}
+      {loading && <Loading text="캐릭터 한줄평 생성 중" />}
       <SmallContainer>
         <ImageContainer>
           <ImageAttachFrame
@@ -342,10 +340,10 @@ const Textsimulation = styled.div`
   position: fixed;
   flex-shrink: 0;
   color: #fff;
-  top: 7rem;
-  left: 55rem;
+  top: 10rem;
+  left: 52rem;
   font-family: "BMHANNAPro";
-  font-size: 25px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;

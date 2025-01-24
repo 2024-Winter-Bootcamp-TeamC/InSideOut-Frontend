@@ -49,7 +49,7 @@ const LoadingText = styled.div`
   left: 50%;
   width: 100%;
   text-align: center;
-  color: #black;
+  color: #000;
   font-family:"BMHANNAPro";
   font-size: 15px;
   font-weight: bold;
@@ -65,7 +65,7 @@ const TimerText = styled.div`
   left: 50%;
   width: 100%;
   text-align: center;
-  color: #black;
+  color: #000;
   font-family:"BMHANNAPro";
   font-size: 14px;
   font-weight: bold;

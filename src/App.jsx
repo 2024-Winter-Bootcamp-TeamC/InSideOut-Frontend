@@ -26,7 +26,7 @@ function App() {
 
     if (audioRef.current) {
       audioRef.current.loop = true; // 반복 재생
-      audioRef.current.volume = 1; // 초기 볼륨 설정
+      audioRef.current.volume = 0.5; // 초기 볼륨 설정
     }
 
     // 사용자 상호작용으로 자동 재생

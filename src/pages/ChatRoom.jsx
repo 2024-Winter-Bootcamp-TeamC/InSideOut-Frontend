@@ -36,7 +36,7 @@ const emotionColorMap = {
   까칠이: { titleColor: "#106B1A", summaryColor: "#278B1E" },
   소심이: { titleColor: "#5B3597", summaryColor: "#683DAC" },
   불안이: { titleColor: "#DF7416", summaryColor: "#F69F1E" },
-  당황이: { titleColor: "#CD3364", summaryColor: "#DB4A7B" },
+  부럽이: { titleColor: "#086F76", summaryColor: "#0E8E97" },
 };
 
 const BackgroundContainer = styled.div`
@@ -170,10 +170,8 @@ const ChatContainer = styled.div`
 
 const Message = styled.div`
   border: ${({ $isUser, $borderColor }) =>
-    $isUser
-      ? "4px solid #877354"
-      : `4px solid ${$borderColor || "#B032F8"}`};
-    align-self: ${({ $isUser }) => ($isUser ? "flex-end" : "flex-start")};
+    $isUser ? "4px solid #877354" : `4px solid ${$borderColor || "#B032F8"}`};
+  align-self: ${({ $isUser }) => ($isUser ? "flex-end" : "flex-start")};
 
   border-radius: 20px;
   padding: 10px 15px;
@@ -182,8 +180,7 @@ const Message = styled.div`
   max-width: 70%;
   font-family: "BMHANNAPro", sans-serif;
   background-color: #ffffff;
-  color: ${({ $isUser, $bgColor }) =>
-    $isUser ? "#000" : $bgColor || "black"};
+  color: ${({ $isUser, $bgColor }) => ($isUser ? "#000" : $bgColor || "black")};
   white-space: pre-wrap;
 `;
 
@@ -527,13 +524,12 @@ const ChatRoom = ({ audioRef }) => {
 
   const startDiscuss = async () => {
     try {
-      lastEmotionRef.current = null;        
-      emotionBuffersRef.current = {};    
-      playQueueRef.current = [];        
-      isPlayingRef.current = false;        
-      currentOffsetRef.current = 0;        
+      lastEmotionRef.current = null;
+      emotionBuffersRef.current = {};
+      playQueueRef.current = [];
+      isPlayingRef.current = false;
+      currentOffsetRef.current = 0;
 
-  
       // --- (2) 감정 이름 매핑 ---
       const emotionNames = emotion_choose_ids.map((id) => {
         if (id === 1) return "기쁨이";
@@ -543,9 +539,9 @@ const ChatRoom = ({ audioRef }) => {
         if (id === 5) return "소심이";
         if (id === 6) return "불안이";
         if (id === 7) return "당황이";
-        return "기쁨이"; 
+        return "기쁨이";
       });
-  
+
       // --- (3) 논쟁모드 SSE 요청 ---
       const url = `http://localhost:8000/api/chats/${chatroom_id}/discussions?user_id=${user_id}`;
       const response = await fetch(url, {
@@ -553,17 +549,17 @@ const ChatRoom = ({ audioRef }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emotions: emotionNames }),
       });
-  
+
       if (!response.ok) {
         console.error("논쟁 모드 요청 실패");
         return;
       }
-  
+
       // --- (4) SSE 스트림 수신 ---
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
       let buffer = "";
-  
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
@@ -579,7 +575,7 @@ const ChatRoom = ({ audioRef }) => {
             if (jsonStr !== "[DONE]") {
               try {
                 const parsed = JSON.parse(jsonStr);
-                handleSSEData(parsed); 
+                handleSSEData(parsed);
               } catch (error) {
                 console.error("JSON 파싱 오류:", error);
               }
@@ -588,7 +584,7 @@ const ChatRoom = ({ audioRef }) => {
         }
         buffer = lines[lines.length - 1];
       }
-  
+
       // 필요하다면 마지막 감정 finalize ...
       // if (lastEmotionRef.current) {
       //   finalizeEmotion(lastEmotionRef.current);
@@ -598,7 +594,6 @@ const ChatRoom = ({ audioRef }) => {
       console.error("논쟁 모드 SSE 오류:", error);
     }
   };
-
 
   const handleChatFinishButton = () => {
     setIsModalOpen(true);
@@ -635,7 +630,7 @@ const ChatRoom = ({ audioRef }) => {
           isPlayingRef.current = false;
           currentOffsetRef.current = 0;
           // 이동
-          navigate(`/reportDetail`, { state: { report_id,user_id } });
+          navigate(`/reportDetail`, { state: { report_id, user_id } });
         }
       }
     } catch (error) {
@@ -784,7 +779,11 @@ const ChatRoom = ({ audioRef }) => {
 
         <VolumeControl>
           <MuteButton onClick={toggleMute}>
-            {isMuted ? <Icon src={Mute} alt="Mute" /> : <Icon src={Volume} alt="Volume" />}
+            {isMuted ? (
+              <Icon src={Mute} alt="Mute" />
+            ) : (
+              <Icon src={Volume} alt="Volume" />
+            )}
           </MuteButton>
           <VolumeSlider
             type="range"

@@ -43,8 +43,8 @@ const emotionMap = {
   },
   당황이: {
     image: 당황이,
-    titleColor: "#CD3364", // 분홍색
-    summaryColor: "#DB4A7B",
+    titleColor: "#086F76", // 분홍색
+    summaryColor: "#0E8E97",
   },
   소심이: {
     image: 소심이,
@@ -122,7 +122,7 @@ const ReportDetail = () => {
                 "#183B89",
                 "#FF3529",
                 "#106B1A",
-                "#CD3364",
+                "#086F76",
                 "#5B3597",
                 "#DF7416",
               ],

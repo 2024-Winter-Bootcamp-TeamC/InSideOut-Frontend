@@ -251,7 +251,7 @@ const EmotionSelect = () => {
       anger: "버럭이",
       fear: "소심이",
       disgust: "까칠이",
-      embarrassment: "당황이",
+      embarrassment: "부럽이",
       anxiety: "불안이",
     };
 

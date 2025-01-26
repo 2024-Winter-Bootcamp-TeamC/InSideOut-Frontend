@@ -60,10 +60,9 @@ const CategoryContainer = styled.div`
 const CategoryTitle = styled.div`
   color: #fff;
   text-align: center;
-  font-family: "IntensaFuente", sans-serif;
   font-size: 100px;
   line-height: 160%;
-    font-family: "BM HANNA Pro";
+  font-family: "BM HANNA Pro";
 `;
 
 // 카테고리 이미지 프레임 컨테이너

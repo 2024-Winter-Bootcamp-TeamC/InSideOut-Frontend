@@ -69,7 +69,7 @@ const ReportDetail = () => {
 
   const handleHomeButtonClick = () => {
     console.log("홈 버튼 클릭");
-    navigate("/category", { state: { user_id } });
+    navigate("/reportlist", { state: { user_id } });
   };
 
   useEffect(() => {
@@ -122,9 +122,9 @@ const ReportDetail = () => {
                 "#183B89",
                 "#FF3529",
                 "#106B1A",
-                "#CD3364",
                 "#5B3597",
                 "#DF7416",
+                "#CD3364",
               ],
               hoverOffset: 20,
             },
@@ -146,7 +146,7 @@ const ReportDetail = () => {
             },
             title: {
               display: true,
-              text: "사용자 감정 비율",
+              text: "사용자 입력에 대한 감정 비율",
               color: "#000",
               font: {
                 size: 25,

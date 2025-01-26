@@ -191,7 +191,7 @@ const LightEffect = styled.div`
 
 const DateOverlay = styled.div`
   font-family: "BMHANNAPro", sans-serif;
-  font-size: 30px;
+  font-size: 28px;
   color: white;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);

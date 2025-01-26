@@ -69,7 +69,7 @@ const ReportDetail = () => {
 
   const handleHomeButtonClick = () => {
     console.log("홈 버튼 클릭");
-    navigate("/category", { state: { user_id } });
+    navigate("/reportlist", { state: { user_id } });
   };
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const ReportDetail = () => {
             "까칠이",
             "소심이",
             "불안이",
-            "당황이",
+            "부럽이",
           ],
           datasets: [
             {
@@ -122,9 +122,9 @@ const ReportDetail = () => {
                 "#183B89",
                 "#FF3529",
                 "#106B1A",
-                "#086F76",
                 "#5B3597",
                 "#DF7416",
+                "#086F76",
               ],
               hoverOffset: 20,
             },
@@ -146,7 +146,7 @@ const ReportDetail = () => {
             },
             title: {
               display: true,
-              text: "사용자 감정 비율",
+              text: "사용자 입력에 대한 감정 비율",
               color: "#000",
               font: {
                 size: 25,

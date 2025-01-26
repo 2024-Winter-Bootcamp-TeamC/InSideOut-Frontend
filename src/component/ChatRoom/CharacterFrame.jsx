@@ -9,7 +9,7 @@ const StyledCard = styled.div`
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
-  border: 3px solid
+  border: 4px solid
     ${({ $isActive, $activeColor }) =>
       $isActive ? $activeColor || "#00FF00" : "white"};
 `;

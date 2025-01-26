@@ -180,7 +180,6 @@ const ChatContainer = styled.div`
   padding: 3% 5%;
 `;
 
-
 const MessageRow = styled.div`
   display: flex;
   align-items: flex-start;
@@ -766,14 +765,6 @@ function ChatRoom({ audioRef }) {
         chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
-
-  // 초기 메시지 추가 (디자인과 렌더링 테스트용)
-  useEffect(() => {
-    setMessages([
-      { emotion: "기쁨이", text: "안녕하세요!", isUser: false },
-      { emotion: null, text: "안녕하세요! 반갑습니다.", isUser: true },
-    ]);
-  }, []);
 
   return (
     <>

@@ -13,6 +13,7 @@ const StyledCard = styled.div`
   background-size: cover; /* 배경 이미지 크기 조정 */
   cursor: pointer; /* 마우스 포인터 변경 */
   transition: transform 0.3s ease; /* 크기 변환 애니메이션 */
+  z-index: 2;
 
   /* hover 시 스타일 */
   &:hover {
@@ -55,7 +56,7 @@ const HoverText = styled.div`
   color: #fff; /* 텍스트 색상 */
   font-size: 40px; /* 텍스트 크기 */
   font-weight: bold; /* 텍스트 굵기 */
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro", sans-serif; /* 폰트 */
 `;
 
 // CategoryImageFrame: 이미지와 텍스트를 포함한 카드 컴포넌트

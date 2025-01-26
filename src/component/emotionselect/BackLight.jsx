@@ -115,9 +115,9 @@ const EmbarrassmentBackLight = styled.div`
   transform: translate(-50%, -30%);
   z-index: 2;
   background: radial-gradient(
-    50% 50% at 57.8% 136%,
-    rgba(248, 152, 195, 0.5) 0%,
-    rgba(205, 51, 100, 0.5) 100%
+    50% 50% at 50% 50%,
+    rgba(122, 216, 206, 0.5) 0%,
+    rgba(50, 150, 145, 0.5) 100%
   );
 
   filter: blur(21px);

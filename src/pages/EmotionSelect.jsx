@@ -251,7 +251,7 @@ const EmotionSelect = () => {
       anger: "버럭이",
       fear: "소심이",
       disgust: "까칠이",
-      embarrassment: "당황이",
+      embarrassment: "부럽이",
       anxiety: "불안이",
     };
 
@@ -341,6 +341,7 @@ const EmotionSelect = () => {
             text={emotionSummaries["기쁨이"] || "기쁨"}
             onClick={handleButtonClick}
             backgroundcolor="#FFF6AB"
+            isClicked={activeBacklight.joy}
           />
         </JoyContainer>
 
@@ -364,6 +365,7 @@ const EmotionSelect = () => {
             text={emotionSummaries["슬픔이"] || "슬픔"}
             onClick={handleButtonClick}
             backgroundcolor="#C6E6FE"
+            isClicked={activeBacklight.sadness}
           />
         </SadnessContainer>
 
@@ -387,6 +389,7 @@ const EmotionSelect = () => {
             text={emotionSummaries["버럭이"] || "버럭"}
             onClick={handleButtonClick}
             backgroundcolor="#FFBDBB"
+            isClicked={activeBacklight.anger}
           />
         </AngerContainer>
 
@@ -410,6 +413,7 @@ const EmotionSelect = () => {
             text={emotionSummaries["소심이"] || "소심"}
             onClick={handleButtonClick}
             backgroundcolor="#D1B2FF"
+            isClicked={activeBacklight.fear}
           />
         </FearContainer>
 
@@ -433,6 +437,7 @@ const EmotionSelect = () => {
             text={emotionSummaries["까칠이"] || "까칠"}
             onClick={handleButtonClick}
             backgroundcolor="#D1FFE2"
+            isClicked={activeBacklight.disgust}
           />
         </DisgustContainer>
 
@@ -447,15 +452,16 @@ const EmotionSelect = () => {
             src={Embarrassment}
             style={{
               position: "relative",
-              top: "-84px",
-              right: "150px",
+              top: "-25px",
+              right: "170px",
               zIndex: 5,
             }}
           />
           <ButtonStyled
-            text={emotionSummaries["당황이"] || "당황"}
+            text={emotionSummaries["부럽이"] || "부럽"}
             onClick={handleButtonClick}
-            backgroundcolor="#FFB4CB"
+            backgroundcolor="#7AD8CE"
+            isClicked={activeBacklight.embarrassment}
           />
         </EmbarrassmentContainer>
 
@@ -479,6 +485,7 @@ const EmotionSelect = () => {
             text={emotionSummaries["불안이"] || "불안"}
             onClick={handleButtonClick}
             backgroundcolor="#FCBE84"
+            isClicked={activeBacklight.anxiety}
           />
         </AnxietyContainer>
         {warning && <WarningText>3가지의 감정을 선택해주세요!</WarningText>}

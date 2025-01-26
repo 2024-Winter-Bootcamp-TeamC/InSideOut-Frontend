@@ -39,18 +39,6 @@ const ContentContainer = styled.div`
   box-sizing: border-box;
 `;
 
-// 카테고리 제목 스타일
-const CategoryTitle1 = styled.div`
-  position: absolute;
-  color: #fff;
-  text-align: center;
-  font-family: "IntensaFuente", sans-serif;
-  font-size: 30px;
-  line-height: 160%;
-  font-family: "BM HANNA Pro";
-  top: 27%;
-`;
-
 const CategoryContainer = styled.div`
   display: flex;
   flex-direction: column;

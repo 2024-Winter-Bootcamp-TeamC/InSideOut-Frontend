@@ -36,7 +36,7 @@ const emotionColorMap = {
   까칠이: { titleColor: "#106B1A", summaryColor: "#278B1E" },
   소심이: { titleColor: "#5B3597", summaryColor: "#683DAC" },
   불안이: { titleColor: "#DF7416", summaryColor: "#F69F1E" },
-  당황이: { titleColor: "#CD3364", summaryColor: "#DB4A7B" },
+  부럽이: { titleColor: "#086F76", summaryColor: "#0E8E97" },
 };
 
 /* 감정 이름 -> 채팅 아바타(말풍선 왼쪽 아이콘) */
@@ -179,6 +179,7 @@ const ChatContainer = styled.div`
   flex-direction: column;
   padding: 3% 5%;
 `;
+
 
 const MessageRow = styled.div`
   display: flex;
@@ -622,7 +623,6 @@ function ChatRoom({ audioRef }) {
     await sendMessageBasicMode();
   };
 
-  /* 대화 끝내기 -> 보고서 생성 */
   const handleChatFinishButton = () => {
     setIsModalOpen(true);
   };

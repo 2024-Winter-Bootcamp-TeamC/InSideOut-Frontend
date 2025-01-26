@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
 
 // 회전 애니메이션 정의
 const rotateLoading = keyframes`
@@ -34,12 +34,12 @@ const LoadingCircle = styled.div`
   width: 100%;
   border-radius: 50%;
   border: 4px solid transparent;
-  border-color: transparent #5B3597 transparent #5B3597;
+  border-color: transparent #5b3597 transparent #5b3597;
   animation: ${rotateLoading} 1.5s linear infinite normal;
   transform-origin: 50% 50%;
 
   &:hover {
-    border-color: transparent #5B3597 transparent #5B3597;
+    border-color: transparent #5b3597 transparent #5b3597;
   }
 `;
 
@@ -50,7 +50,7 @@ const LoadingText = styled.div`
   width: 100%;
   text-align: center;
   color: #000;
-  font-family:"BMHANNAPro";
+  font-family: "BMHANNAPro";
   font-size: 15px;
   font-weight: bold;
   transform: translate(-50%, -50%);
@@ -66,7 +66,7 @@ const TimerText = styled.div`
   width: 100%;
   text-align: center;
   color: #000;
-  font-family:"BMHANNAPro";
+  font-family: "BMHANNAPro";
   font-size: 14px;
   font-weight: bold;
   transform: translate(-50%, -50%);
@@ -81,14 +81,14 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;  /* 수직으로 배치 */
-  position: fixed;  /* 화면에 고정 */
+  flex-direction: column; /* 수직으로 배치 */
+  position: fixed; /* 화면에 고정 */
   top: 0;
   left: 0;
-  z-index: 9999;  /* 큰 z-index 값 설정 */
+  z-index: 9999; /* 큰 z-index 값 설정 */
 `;
 
-const Loading = ({text}) => {
+const Loading = ({ text }) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {

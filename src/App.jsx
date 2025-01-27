@@ -3,7 +3,7 @@ import GlobalStyle from "./styles/GlobalStyle.js";
 import ReportDetail from "./pages/ReportDetail.jsx";
 import Category from "./pages/category.jsx";
 import ChatRoom from "./pages/ChatRoom.jsx";
-import Login from "./pages/Login.jsx";
+import Login from "./pages/login.jsx";
 import ReportList from "./pages/reportlist.jsx";
 import Preparation from "./pages/Preparation.jsx";
 import EmotionSelect from "./pages/EmotionSelect.jsx";

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../component/ChatRoom/ChatFinishModal.jsx";
 import Loading from "../component/loading";
-import ChatRoomBackground from "../assets/ChatRoom/Background.png";
+import ChatRoomBackground from "../assets/ChatRoom/BackGround.png";
 import CharacterFrame from "../component/ChatRoom/CharacterFrame";
 import AngerPNG from "../assets/ChatRoom/Anger.png";
 import JoyPNG from "../assets/ChatRoom/Joy.png";

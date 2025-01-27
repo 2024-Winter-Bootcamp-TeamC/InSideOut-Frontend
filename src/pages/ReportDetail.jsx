@@ -41,7 +41,7 @@ const emotionMap = {
     titleColor: "#106B1A", // 녹색
     summaryColor: "#278B1E",
   },
-  당황이: {
+  부럽이: {
     image: 당황이,
     titleColor: "#086F76", // 분홍색
     summaryColor: "#0E8E97",

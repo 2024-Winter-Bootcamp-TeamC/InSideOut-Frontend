@@ -47,7 +47,7 @@ const emotionNameToImage = {
   까칠이: DisgustPNG,
   소심이: FearPNG,
   불안이: AnxietyPNG,
-  당황이: EmbarrassmentPNG,
+  부럽이: EmbarrassmentPNG,
 };
 
 const BackgroundContainer = styled.div`
@@ -397,7 +397,7 @@ function ChatRoom({ audioRef }) {
       case 6:
         return "불안이";
       case 7:
-        return "당황이";
+        return "부럽이";
       default:
         return "기쁨이";
     }

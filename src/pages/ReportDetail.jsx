@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import reportDetailBackground from "../assets/reportdetail.jpg";
+import reportDetailBackground from "../assets/ReportDetail.jpg";
 import 기쁨이 from "../assets/기쁨이.png";
 import 슬픔이 from "../assets/슬픔이.png";
 import 버럭이 from "../assets/버럭이.png";

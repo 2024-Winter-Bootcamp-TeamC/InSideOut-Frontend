@@ -146,7 +146,7 @@ const ReportDetail = () => {
             },
             title: {
               display: true,
-              text: "사용자 입력에 대한 감정 비율",
+              text: "사용자 입력의 감정비율",
               color: "#000",
               font: {
                 size: 25,

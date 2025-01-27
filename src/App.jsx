@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import GlobalStyle from "./styles/GlobalStyle";
-import ReportDetail from "./pages/ReportDetail";
-import Category from "./pages/category";
-import ChatRoom from "./pages/ChatRoom";
-import Login from "./pages/Login";
-import ReportList from "./pages/reportlist";
-import Preparation from "./pages/Preparation";
-import EmotionSelect from "./pages/EmotionSelect";
+import GlobalStyle from "./styles/GlobalStyle.js";
+import ReportDetail from "./pages/ReportDetail.jsx";
+import Category from "./pages/category.jsx";
+import ChatRoom from "./pages/ChatRoom.jsx";
+import Login from "./pages/Login.jsx";
+import ReportList from "./pages/reportlist.jsx";
+import Preparation from "./pages/Preparation.jsx";
+import EmotionSelect from "./pages/EmotionSelect.jsx";
 import { useEffect, useRef } from "react";
 import BGM from "./assets/BackGroundBGM1.mp3";
 

@@ -5,7 +5,7 @@ import Category from "./pages/category.jsx";
 import ChatRoom from "./pages/ChatRoom.jsx";
 import Login from "./pages/login.jsx";
 import ReportList from "./pages/reportlist.jsx";
-import Preparation from "./pages/Preparation.jsx";
+import Preparation from "./pages/preparation.jsx";
 import EmotionSelect from "./pages/EmotionSelect.jsx";
 import { useEffect, useRef } from "react";
 import BGM from "./assets/BackGroundBGM1.mp3";

@@ -31,7 +31,7 @@ const Login = () => {
   const handleSignUp = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/users/signup",
+        "https://api.myinsideout.world/api/users/signup",
         {
           nickname,
           password,
@@ -55,7 +55,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/users/login",
+        "https://api.myinsideout.world/api/users/login",
         {
           nickname,
           password,

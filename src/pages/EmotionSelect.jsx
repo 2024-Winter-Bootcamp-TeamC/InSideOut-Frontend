@@ -198,7 +198,7 @@ const EmotionSelect = () => {
     const fetchEmotionSummaries = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/emotions/${user_id}`
+          `https://api.myinsideout.world/api/emotions/${user_id}`
         );
         console.log(response.data);
         if (response.status === 200) {
@@ -277,7 +277,7 @@ const EmotionSelect = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/chatrooms/${user_id}`,
+        `https://api.myinsideout.world/api/chatrooms/${user_id}`,
         requestBody,
         {
           headers: {

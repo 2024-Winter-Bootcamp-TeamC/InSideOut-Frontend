@@ -76,7 +76,7 @@ const ReportDetail = () => {
     const fetchReportDetail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/reports/view/${report_id}`
+          `https://api.myinsideout.world/api/reports/view/${report_id}`
         );
         console.log(response.data);
         if (response.status === 200) {
@@ -350,4 +350,5 @@ const WordingSpearker = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  padding: 0rem 1rem 1rem 1rem;
 `;

@@ -212,7 +212,7 @@ const ReportList = () => {
   const fetchReports = useCallback(async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/reports/${user_id}`
+        `https://api.myinsideout.world/api/reports/${user_id}`
       );
       if (response.status === 200 && response.data.status === "success") {
         const cleanedData = response.data.data.map((report) => ({

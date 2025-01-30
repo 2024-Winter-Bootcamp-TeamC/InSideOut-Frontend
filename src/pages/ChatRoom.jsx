@@ -502,7 +502,7 @@ function ChatRoom({ audioRef }) {
   /* SSE 연결 설정 함수 */
   const setupEventSource = useCallback(() => {
     const eventSource = new EventSource(
-      `http://localhost:8000/api/chats/sse/${chatroom_id}`
+      `http://api.myinsideout.world/api/chats/sse/${chatroom_id}`
     );
 
     eventSource.onmessage = (event) => {
@@ -562,7 +562,7 @@ function ChatRoom({ audioRef }) {
       // 유저가 고른 감정(숫자 IDs) -> 한글 감정 배열
       const emotionNames = emotion_choose_ids.map((id) => getEmotionName(id));
 
-      const url = `http://localhost:8000/api/chats/${chatroom_id}/messages?user_id=${user_id}`;
+      const url = `https://api.myinsideout.world/api/chats/${chatroom_id}/messages?user_id=${user_id}`;
       const body = {
         emotions: emotionNames,
         prompt: inputText,
@@ -637,7 +637,7 @@ function ChatRoom({ audioRef }) {
       isPlayingRef.current = false;
       setIsFetchDone(false);
 
-      const url = `http://localhost:8000/api/reports/${user_id}?chatroom_id=${chatroom_id}`;
+      const url = `https://api.myinsideout.world/api/reports/${user_id}?chatroom_id=${chatroom_id}`;
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -708,7 +708,7 @@ function ChatRoom({ audioRef }) {
 
       const emotionNames = emotion_choose_ids.map((id) => getEmotionName(id));
 
-      const url = `http://localhost:8000/api/chats/${chatroom_id}/discussions?user_id=${user_id}`;
+      const url = `https://api.myinsideout.world/api/chats/${chatroom_id}/discussions?user_id=${user_id}`;
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

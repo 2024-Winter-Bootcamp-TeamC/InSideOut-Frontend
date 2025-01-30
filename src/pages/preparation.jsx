@@ -54,7 +54,7 @@ const Preparation = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/preparations?user_id=${user_id}&category=${category}`,
+        `https://api.myinsideout.world/api/preparations?user_id=${user_id}&category=${category}`,
         formData,
         {
           headers: {

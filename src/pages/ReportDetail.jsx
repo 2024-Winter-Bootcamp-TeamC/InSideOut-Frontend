@@ -76,7 +76,7 @@ const ReportDetail = () => {
     const fetchReportDetail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/reports/view/${report_id}`
+          `https://api.myinsideout.world/api/reports/view/${report_id}`
         );
         console.log(response.data);
         if (response.status === 200) {
@@ -139,7 +139,7 @@ const ReportDetail = () => {
                 color: "#000",
                 font: {
                   size: 14,
-                  family: "BM HANNA Pro",
+                  family: "BMHANNAPro",
                   weight: "bold",
                 },
               },
@@ -151,7 +151,7 @@ const ReportDetail = () => {
               font: {
                 size: 25,
                 weight: "bold",
-                family: "BM HANNA Pro",
+                family: "BMHANNAPro",
               },
             },
           },
@@ -255,7 +255,7 @@ const SimulationText = styled.div`
   height: 10%;
   flex-shrink: 0;
   color: #000;
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro";
   font-size: 2.25rem;
   font-style: normal;
   font-weight: 400;
@@ -268,7 +268,7 @@ const SmulText = styled.div`
   flex-shrink: 0;
   color: #8a8a8a;
 
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro";
   font-size: 1.0625rem;
   font-style: normal;
   font-weight: 400;
@@ -280,7 +280,7 @@ const TitleText = styled.p`
   height: 3.75rem;
   color: #000;
   text-align: center;
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro";
   font-size: 55px;
   font-style: normal;
   font-weight: 400;
@@ -318,7 +318,7 @@ const EmotionImage = styled.img`
 const EmotionName = styled.div`
   width: 36.5625rem;
   height: 2.9375rem;
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro";
   color: ${(props) => props.color || "#000"}; // props.color 사용, 기본값 검정색
   font-size: 25px;
   font-style: normal;
@@ -332,7 +332,7 @@ const EmotionSummary = styled.div`
   top: 30%;
   left: 15%;
   color: ${(props) => props.color || "#000"}; // props.color 사용, 기본값 검정색
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro";
   font-size: 17px;
   font-style: normal;
   font-weight: 400;
@@ -345,9 +345,10 @@ const WordingSpearker = styled.div`
   text-align: center;
   -webkit-text-stroke-width: 2;
   -webkit-text-stroke-color: #fff;
-  font-family: "BM HANNA Pro";
-  font-size: 2rem;
+  font-family: "BMHANNAPro";
+  font-size: 1.7rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  padding: 0rem 1rem 1rem 1rem;
 `;

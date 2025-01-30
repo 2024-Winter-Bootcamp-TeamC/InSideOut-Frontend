@@ -54,7 +54,7 @@ const CategoryTitle = styled.div`
   font-family: "BMHANNAPro", sans-serif;
   font-size: 100px;
   line-height: 160%;
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro";
 `;
 
 const CategoryTitle1 = styled.div`
@@ -64,7 +64,7 @@ const CategoryTitle1 = styled.div`
   font-family: "IntensaFuente", sans-serif;
   font-size: 30px;
   line-height: 160%;
-  font-family: "BM HANNA Pro";
+  font-family: "BMHANNAPro";
   top: 27%;
 `;
 

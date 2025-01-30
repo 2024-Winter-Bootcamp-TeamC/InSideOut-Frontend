@@ -14,7 +14,7 @@ import axios from "axios";
 const categoryImages = {
   가족: FamilyObject,
   친구: FriendsObject,
-  사랑: LoveObject,
+  연인: LoveObject,
   회사: CompanyObject,
 };
 

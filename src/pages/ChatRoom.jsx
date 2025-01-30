@@ -502,7 +502,7 @@ function ChatRoom({ audioRef }) {
   /* SSE 연결 설정 함수 */
   const setupEventSource = useCallback(() => {
     const eventSource = new EventSource(
-      `http://api.myinsideout.world/api/chats/sse/${chatroom_id}`
+      `https://api.myinsideout.world/api/chats/sse/${chatroom_id}`
     );
 
     eventSource.onmessage = (event) => {

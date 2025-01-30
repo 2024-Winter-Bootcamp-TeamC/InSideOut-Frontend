@@ -346,7 +346,7 @@ const WordingSpearker = styled.div`
   -webkit-text-stroke-width: 2;
   -webkit-text-stroke-color: #fff;
   font-family: "BMHANNAPro";
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
